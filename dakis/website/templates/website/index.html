@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load trans blocktrans from i18n %}
+
+
+{% block content %}
+<h1>{% trans "Experiment API" %}</h1>
+Post your experiment results and get summaries compare experiment results.
+Each experiment should contain multiple metric entries. You can sumarise them.
+{% endblock %}
