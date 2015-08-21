@@ -3,7 +3,13 @@
 
 
 {% block content %}
-<h1>{% trans "Experiment API" %}</h1>
-Post your experiment results and get summaries compare experiment results.
-Each experiment should contain multiple metric entries. You can sumarise them.
+<div class="text-center">
+  <h3>{% trans "Post your experiment results. Get summaries. Compare results." %}</h3>
+  <p>Each experiment should consist of multiple tasks with metrics. You can sumarise, analise these metrics.</p>
+</div>
+
+<h2>{% trans "Summaries" %}</h2>
+  {% for experiment in experiments %}
+    <a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a>
+  {% endfor %}
 {% endblock %}

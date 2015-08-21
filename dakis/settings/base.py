@@ -189,6 +189,7 @@ SERVER_ALIASES = (
 
 INSTALLED_APPS += (
     'dakis.core',
+    'dakis.api',
     'dakis.website',
 )
 

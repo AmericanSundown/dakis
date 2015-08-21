@@ -3,11 +3,12 @@ from rest_framework import routers
 from django.conf import settings
 from django.conf.urls import url, include
 
-from dakis.api.views import ExperimentViewSet
+import dakis.api.views as api_views
 
 
 router = routers.DefaultRouter()
-router.register(r'experiments', ExperimentViewSet)
+router.register(r'experiments', api_views.ExperimentViewSet)
+router.register(r'tasks', api_views.TaskViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

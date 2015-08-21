@@ -50,7 +50,7 @@ class Experiment(models.Model):
         return '%s  %s  %s  %s' % (self.algorithm, self.neighbours, self.subregion, self.stopping_accuracy)
 
     def get_absolute_url(self):
-        return reverse('experiment-details', args=[self.pk])
+        return reverse('exp-details', args=[self.pk])
 
 
 class Task(models.Model):

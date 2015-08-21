@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load trans blocktrans from i18n %}
+
+
+{% block content %}
+  <div class="pull-right">
+    <a target="_tab" href={% url 'experiment-detail' exp.pk %}>
+      <button class='btn btn-default'>{% trans 'Edit' %}</button>
+    </a>
+    <a target="_tab" href={% url 'task-list' %}>
+      <button class='btn btn-default'>{% trans 'Add results' %}</button>
+    </a>
+  </div>
+  <h1>{{ exp }} {% if not exp.valid %}<span class="label label-danger">Invalid</span>{% endif %}</h1>
+  {% if exp.description %}
+    <p>{{ exp.description }}</p>
+  {% endif %}
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+        <div class='text-center'><h3>Tasks summary</h3></div>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>{% trans 'Class' %}</th>
+                <th>{% trans 'Tasks' %}</th>
+                <th>{% trans 'CallsAvg' %}</th>
+                <th>{% trans 'Calls50' %}</th>
+                <th>{% trans 'Calls100' %}</th>
+                <th>{% trans 'DurationAvg' %}</th>
+                <th>{% trans 'SubregAvg' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for summary in summaries %}
+            <tr style="text-align: right">
+              <td>{{ summary.title }}</td>
+              <td>{{ summary.tasks_count }}</td>
+              <td>{{ summary.calls_avg }}</td>
+              <td>{{ summary.calls_50 }}</td>
+              <td>{{ summary.calls_100 }}</td>
+              <td>{{ summary.duration_avg }}</td>
+              <td>{{ summary.subregions_avg }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+      </div>
+      <div class="col-md-6">
+        <div class='text-center'><h3>Algorithm details</h3></div>
+        <p><small><b>{% trans 'Algorithm' %}</b></small>: {{ exp.algorithm }}</p>
+        <p><small><b>{% trans 'Neighbours' %}</b></small>: {{ exp.neighbours }}</p>
+        <p><small><b>{% trans 'Stopping criteria' %}</b></small>: {{ exp.stopping_criteria }}</p>
+        <p><small><b>{% trans 'Stopping accuracy' %}</b></small>: {{ exp.stopping_accuracy }}</p>
+        <p><small><b>{% trans 'Subregion' %}</b></small>: {{ exp.subregion }}</p>
+        <p><small><b>{% trans 'Inner problem accuracy' %}</b></small>: {{ exp.inner_problem_accuracy }}</p>
+        <p><small><b>{% trans 'Inner problem iters' %}</b></small>: {{ exp.inner_problem_iters }}</p>
+        <p><small><b>{% trans 'Inner problem division' %}</b></small>: {{ exp.inner_problem_division }}</p>
+        <p><small><b>{% trans 'Lipschitz estimation strategy' %}</b></small>: {{ exp.lipschitz_estimation }}</p>
+        <p><small><b>{% trans 'Simplex division strategy' %}</b></small>: {{ exp.simplex_division }}</p>
+        {% if exp.mistakes %}
+          <p><small><b>{% trans 'mistakes' %}</b></small>: {{ exp.mistakes }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
