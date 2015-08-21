@@ -151,6 +151,20 @@ INSTALLED_APPS += (
 )
 
 
+# djangorestframework
+# http://www.django-rest-framework.org/
+# https://github.com/tomchristie/django-rest-framework
+INSTALLED_APPS += (
+    'rest_framework',
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
+}
+
+
 # django-nose
 # https://pypi.python.org/pypi/django-nose
 

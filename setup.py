@@ -15,6 +15,8 @@ setup(
         'django-webtest',
         'django-autoslug',
         'django-allauth',
+        'djangorestframework',
+        'django-filter',
         'factory_boy',
         'fake-factory',
         'unidecode',
