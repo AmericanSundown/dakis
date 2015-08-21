@@ -2,17 +2,24 @@ Development environment
 =======================
 In Ubuntu terminal execute::
 
-  $ createdb dakis
-  $ make
-  $ bin/django migrate
-  $ make testall
-  $ make run
+  $ sudo apt-get install python-dev python3-dev 
+  $ sudo apt-get install postgresql
+  $ sudo -u postgres psql
+  # create role <unix_username>;
+  # alter role <unix_username> with superuser;
+  # alter role <unix_username> with login;
+  $ createdb dakis            # Creates Postgresql database with name ``dakis``
+  $ make                      # Downloads and configures python packages
+  $ bin/django migrate        # Creates tables in the database
+  $ make testall              # Checks if everything works properly
+  $ make run                  # Run server locally
+
 
 Project Scope
 =============
 - Post one experiments task result through REST 
     - Universal python poster script should exist
     - Results can be posted from supercomputer nodes
-- Show experiments list
-- Show experiment tasks results summary
++ Show experiments list
++ Show experiment tasks results summary
 - Compare two experiment summaryies
