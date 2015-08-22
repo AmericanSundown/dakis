@@ -27,6 +27,7 @@ setup(
         'docutils',
         'exportrecipe',
         'pytz',
+        'pathlib',
         'html_linter',
         'template-remover',
     ],

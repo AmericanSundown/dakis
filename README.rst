@@ -2,8 +2,8 @@ Development environment
 =======================
 In Ubuntu terminal execute::
 
-  $ sudo apt-get install python-dev python3-dev 
-  $ sudo apt-get install postgresql
+  $ sudo apt-get install python-dev python3-dev python-virtualenv
+  $ sudo apt-get install postgresql libpq-dev
   $ sudo -u postgres psql
   # create role <unix_username>;
   # alter role <unix_username> with superuser;
