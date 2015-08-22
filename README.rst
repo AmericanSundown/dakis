@@ -17,8 +17,10 @@ In Ubuntu terminal execute::
 
 Project Scope
 =============
-- Post one experiments task result through REST 
++ Post one experiments task result through REST 
     - Universal python poster script should exist
+        - Data should be passed as command line argument and script posts it to API
+        - Next tasks starter could also exist. After posting data script starts next task execution.
     - Results can be posted from supercomputer nodes
 + Show experiments list
 + Show experiment tasks results summary

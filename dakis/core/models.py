@@ -41,8 +41,8 @@ class Experiment(models.Model):
     simplex_division = models.CharField(_('Simplex division'), max_length=255, null=True,
         help_text=_('Subregion division strategy'))
 
-    valid = models.BooleanField(_('Valid'), default=True,
-        help_text=_('Is this experiment valid? Its not valid if critical mistake was found.'))
+    invalid = models.BooleanField(_('Not valid'), default=True,
+        help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
     mistakes = models.TextField(_('Mistakes'), null=True,
         help_text=_('Descriptions of mistakes, which were found in this experiment'))
 
