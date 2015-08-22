@@ -54,6 +54,12 @@ class Experiment(models.Model):
 
 
 class Task(models.Model):
+    STATUS_CHOICES = (
+        ('C', 'Created'),
+        ('R', 'Running'),
+        ('S', 'Suspended'),
+        ('D', 'Done')
+    )
     func_name = models.CharField(_('Function name'), null=True, max_length=255, help_text=_('Function name'))
     func_cls = models.IntegerField(_('GKLS class'), null=True, help_text=_('GKLS function class'))
     func_id = models.IntegerField(_('GKLS id'), null=True, help_text=_('GKLS function id'))
@@ -64,3 +70,4 @@ class Task(models.Model):
     x_min = models.CharField(_('X min'), max_length=255, null=True, help_text=_('Determined minimum coordinates'))
     experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,
                     help_text=_('ID of experiment to which this task is assigned to'))
+    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
