@@ -9,6 +9,7 @@ slug = r'[a-z0-9-]+'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^exp/(?P<exp_id>\d+)/', views.exp_details, name='exp-summary'),
+    url(r'^create-gkls-tasks/(?P<exp_id>\d+)/', views.create_gkls_tasks, name='experiment-create-gkls-tasks'),
     url(r'^api/', include('dakis.api.urls')),
 ]
 

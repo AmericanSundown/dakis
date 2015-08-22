@@ -4,14 +4,17 @@
 
 {% block content %}
   <div class="pull-right">
-    <a target="_tab" href={% url 'experiment-detail' exp.pk %}>
-      <button class='btn btn-default'>{% trans 'Edit' %}</button>
+    <a target="_tab" href="{% url 'experiment-detail' exp.pk %}">
+      <button class='btn btn-primary'>{% trans 'Edit' %}</button>
     </a>
-    <a target="_tab" href={% url 'task-list' %}>
+    <a href="{% url 'experiment-create-gkls-tasks' exp.pk %}">
+      <button class='btn btn-default'>{% trans 'Create GKLS tasks' %}</button>
+    </a>
+    <a target="_tab" href="{% url 'task-list' %}">
       <button class='btn btn-default'>{% trans 'Add results' %}</button>
     </a>
   </div>
-  <h1>{{ exp }} {% if not exp.valid %}<span class="label label-danger">Invalid</span>{% endif %}</h1>
+  <h1>{{ exp }} {% if exp.invalid %}<span class="label label-danger">Invalid</span>{% endif %}</h1>
   {% if exp.description %}
     <p>{{ exp.description }}</p>
   {% endif %}
