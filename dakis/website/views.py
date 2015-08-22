@@ -1,11 +1,14 @@
 import datetime
+import json
 
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.sites.models import Site
 
 from dakis.core.models import Experiment, Task
 
@@ -14,6 +17,21 @@ def index(request):
     return render(request, 'website/index.html', {
         'experiments': Experiment.objects.all(),
     })
+
+
+def get_next_task(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    domain = Site.objects.get_current().domain
+    if exp.tasks.filter(status='C').exists():
+        task = exp.tasks.filter(status='C').first()
+        task.status = 'R'
+        task.save()
+        return HttpResponse(json.dumps({
+            'experiment': 'http://' + domain + reverse('experiment-detail', args=[exp.pk]),
+            'func_cls': task.func_cls,
+            'func_id': task.func_id,
+        }), content_type="application/json")
+    return HttpResponse(json.dumps({}), content_type="application/json")
 
 
 def create_gkls_tasks(request, exp_id):
