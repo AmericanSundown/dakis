@@ -34,5 +34,6 @@ var/www/static var/www/media: ; mkdir -p $@
 
 bin/django: bin/buildout buildout.cfg $(wildcard config/*.cfg) $(wildcard config/env/*.cfg) mkdirs ; $<
 	bin/django compilemessages
+	bin/django collectstatic --noinput
 
 .PHONY: all help run mkdirs test testall tags
