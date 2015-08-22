@@ -36,4 +36,7 @@ bin/django: bin/buildout buildout.cfg $(wildcard config/*.cfg) $(wildcard config
 	bin/django compilemessages
 	bin/django collectstatic --noinput
 
+shell:
+	bin/django shell_plus
+
 .PHONY: all help run mkdirs test testall tags
