@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load trans blocktrans from i18n %}
+{% load timedelta from websitetags %}
 
 
 {% block content %}
   <div class="pull-right">
-    <a target="_tab" href="{% url 'experiment-detail' exp.pk %}">
+    <a href={% url 'experiment-detail' exp.pk %}>
       <button class='btn btn-primary'>{% trans 'Edit' %}</button>
     </a>
-    <a href="{% url 'experiment-create-gkls-tasks' exp.pk %}">
+    <a href={% url 'experiment-create-gkls-tasks' exp.pk %}>
       <button class='btn btn-default'>{% trans 'Create GKLS tasks' %}</button>
     </a>
-    <a target="_tab" href="{% url 'task-list' %}">
+    <a href={% url 'task-list' %}>
       <button class='btn btn-default'>{% trans 'Add results' %}</button>
     </a>
   </div>
@@ -43,7 +44,7 @@
               <td>{{ summary.calls_avg }}</td>
               <td>{{ summary.calls_50 }}</td>
               <td>{{ summary.calls_100 }}</td>
-              <td>{{ summary.duration_avg }}</td>
+              <td>{{ summary.duration_avg|timedelta }}</td>
               <td>{{ summary.subregions_avg }}</td>
             </tr>
             {% endfor %}

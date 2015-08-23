@@ -1,5 +1,6 @@
 import yattag
 import markdown
+import datetime
 
 from django import template
 from django.contrib import messages
@@ -49,6 +50,11 @@ def messages_tag(context):
 @register.filter(name='markdown')
 def markdown_tag(value):
     return mark_safe(markdown.markdown(value, extensions=['markdown.extensions.attr_list']))
+
+
+@register.filter(name='timedelta')
+def timedelta_filter(value):
+    return str(value)[:-5]
 
 
 @register.simple_tag(name='formrenderer', takes_context=True)
