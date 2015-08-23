@@ -41,11 +41,11 @@
             <tr style="text-align: right">
               <td>{{ summary.title }}</td>
               <td>{{ summary.tasks_count }}</td>
-              <td>{{ summary.calls_avg }}</td>
+              <td>{{ summary.calls_avg|floatformat:"-2" }}</td>
               <td>{{ summary.calls_50 }}</td>
               <td>{{ summary.calls_100 }}</td>
               <td>{{ summary.duration_avg|timedelta }}</td>
-              <td>{{ summary.subregions_avg }}</td>
+              <td>{{ summary.subregions_avg|floatformat:"-2" }}</td>
             </tr>
             {% endfor %}
             </tbody>
