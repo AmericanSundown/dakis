@@ -31,6 +31,7 @@ def get_next_task(request, exp_id):
             'experiment': 'http://' + domain + reverse('experiment-detail', args=[exp.pk]),
             'func_cls': task.func_cls,
             'func_id': task.func_id,
+            'id': task.pk,
         }), content_type="application/json")
     return HttpResponse(json.dumps({}), content_type="application/json")
 
