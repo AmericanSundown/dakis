@@ -47,7 +47,7 @@ def create_gkls_tasks(request, exp_id):
 
 def exp_details(request, exp_id):
     exp = Experiment.objects.get(pk=exp_id)
-    unique_classes = exp.tasks.values_list('func_cls', flat=True).distinct()
+    unique_classes = exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct()
 
     summaries = []
     for cls in unique_classes:

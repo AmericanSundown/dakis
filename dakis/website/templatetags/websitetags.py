@@ -54,7 +54,10 @@ def markdown_tag(value):
 
 @register.filter(name='timedelta')
 def timedelta_filter(value):
-    return str(value)[:-5]
+    value_str = str(value)
+    if '.' in value_str:
+        return value_str[:-5]
+    return value_str
 
 
 @register.simple_tag(name='formrenderer', takes_context=True)
