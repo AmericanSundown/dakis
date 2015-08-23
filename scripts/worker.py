@@ -18,6 +18,7 @@ parser.add_argument('-task', '--task_id', type=int, help='Task ID', nargs=None, 
 parser.add_argument('-calls', '--calls', type=int, help='Number of calls', nargs=None, default=None)
 parser.add_argument('-duration', '--duration', type=timedelta_format, help='Execution duration', nargs=None, default=None)
 parser.add_argument('-subs', '--subregions', type=int, help='Number of subregions', nargs=None, default=None)
+parser.add_argument('-st', '--status', type=int, help='Status of the task. D - done, S - suspended.', nargs=None, default=None)
 
 
 def run_next_task(exp_id, executable):
@@ -33,7 +34,6 @@ def run_next_task(exp_id, executable):
             '--callback=%s' % sys.argv[0],
         ],
         stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
-        print('Started task %d, cls=%d, fid=%d' % (task['id'], task['func_cls'], task['func_id']))
 
 
 def send_task_results(args):
@@ -42,7 +42,7 @@ def send_task_results(args):
         'calls': args.calls,
         'duration': args.duration,
         'subregions': args.subregions,
-        'status': 'D',
+        'status': args.status,
     }
     resp = requests.put(url, data)
     exp_id = resp.json()['experiment'].split('experiments')[-1].strip('/')
