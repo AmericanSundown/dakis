@@ -15,6 +15,6 @@ class Item(object):
 
 menus = {
     'topmenu': [
-        Item(_('Experiment API'), 'experiment-list'),
+        Item(_('New experiment'), 'experiment-list'),
     ],
 }
