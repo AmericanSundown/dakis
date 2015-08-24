@@ -49,7 +49,11 @@
             {% for summary in summaries %}
             <tr style="text-align: right">
               <td>{{ summary.title }}</td>
-              <td>{{ summary.tasks_count }}</td>
+              <td>{{ summary.tasks_count }}
+                  {% if summary.tasks_suspended %}
+                    <span style='color: red; font-size: small;'>{{ summary.tasks_suspended }}</small>
+                  {% endif %}
+              </td>
               <td>{{ summary.calls_avg|floatformat:"-2" }}</td>
               <td>{{ summary.calls_50 }}</td>
               <td>{{ summary.calls_100 }}</td>
