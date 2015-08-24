@@ -65,7 +65,7 @@ class Task(models.Model):
     func_id = models.IntegerField(_('GKLS id'), null=True, help_text=_('GKLS function id'))
     calls = models.IntegerField(_('Calls'), null=True, help_text=_('Calls'))
     subregions = models.IntegerField(_('Subregions'), null=True, help_text=_('Subregions in final partition'))
-    duration = models.DurationField(_('Duration'), null=True, help_text=_('Duration of task execution'))
+    duration = models.FloatField(_('Duration'), null=True, help_text=_('Task execution duration in seconds'))
     f_min = models.FloatField(_('F min'), null=True, help_text=_('Value of minimum, which managed to determine'))
     x_min = models.CharField(_('X min'), max_length=255, null=True, help_text=_('Determined minimum coordinates'))
     experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,

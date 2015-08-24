@@ -54,7 +54,7 @@ def markdown_tag(value):
 
 @register.filter(name='timedelta')
 def timedelta_filter(value):
-    value_str = str(value)
+    value_str = str(datetime.timedelta(seconds=value))
     if '.' in value_str:
         return value_str[:-5]
     return value_str

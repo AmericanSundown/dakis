@@ -57,18 +57,14 @@ def exp_details(request, exp_id):
             calls = tasks.order_by('calls').values_list('calls', flat=True)
             subregions = tasks.values_list('subregions', flat=True)
             durations = tasks.values_list('duration', flat=True)
-            total_duration = datetime.timedelta(0)
-            for duration in durations:
-                if duration:
-                    total_duration += duration
             summary = {
                 'title': cls,
                 'tasks_count': tasks_count,
                 'calls_avg': sum([c for c in calls if c])/float(len(calls)),
                 'calls_50': calls[int(tasks_count/2)],
                 'calls_100': calls[len(calls)-1],
-                'duration_avg': total_duration/float(len(durations)),
-                'subregions_avg': sum([s for s in subregions if s])/float(len(durations)),
+                'duration_avg':sum([d for d in durations if d])/float(len(durations)),
+                'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
             }
             summaries.append(summary)
 
