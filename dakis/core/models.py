@@ -25,6 +25,14 @@ class Experiment(models.Model):
 
     neighbours = models.CharField(_('Neighbours'), max_length=255, null=True,
         help_text=_('Strategy how neighbours are determined'))
+    subregion_selection = models.CharField(_('Subregion selection strategy'), max_length=255, null=True,
+        help_text=_('Strategy how subregion is selected for division'))
+
+    lipschitz_estimation = models.CharField(_('Lipschitz estimation'), max_length=255, null=True,
+        help_text=_('Subregion Lipschitz constant estimation strategy'))
+
+    subregion_division = models.CharField(_('Subregion division'), max_length=255, null=True,
+        help_text=_('Subregion division strategy'))
 
     stopping_criteria = models.CharField(_('Stopping criteria'), max_length=255, null=True,
         help_text=_('Stopping criteria strategy'))
@@ -40,12 +48,6 @@ class Experiment(models.Model):
         help_text=_('Inner problem maximum iterations to get solution'))
     inner_problem_division = models.CharField(_('Division strategy in inner problem'), max_length=255, null=True,
         help_text=_('Inner problem subregion division strategy'))
-
-    lipschitz_estimation = models.CharField(_('Lipschitz estimation'), max_length=255, null=True,
-        help_text=_('Subregion Lipschitz constant estimation strategy'))
-
-    simplex_division = models.CharField(_('Simplex division'), max_length=255, null=True,
-        help_text=_('Subregion division strategy'))
 
     invalid = models.BooleanField(_('Not valid'), default=True,
         help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
