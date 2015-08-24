@@ -10,6 +10,6 @@
 
 <h2>{% trans "Summaries" %}</h2>
   {% for experiment in experiments %}
-    <a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a>
+    <p><a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a></p>
   {% endfor %}
 {% endblock %}
