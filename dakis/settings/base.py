@@ -135,6 +135,13 @@ COMPRESS_PRECOMPILERS = (
 )
 
 
+INSTALLED_APPS += (
+    'dakis.core',
+    'dakis.api',
+    'dakis.website',
+)
+
+
 # django-debug-toolbar settings
 # https://django-debug-toolbar.readthedocs.org/
 
@@ -186,12 +193,6 @@ SERVER_ALIASES = (
     'www.dakis.lt',
     'localhost',
     '127.0.0.1',
-)
-
-INSTALLED_APPS += (
-    'dakis.core',
-    'dakis.api',
-    'dakis.website',
 )
 
 

@@ -1,0 +1,8 @@
+{% extends "rest_framework/base.html" %}
+{% load static from staticfiles %}
+
+{% block branding %}
+<a href="/">
+  <img style='margin-top: 3px; margin-bottom: 5px;' src="{% static 'img/logo.png' %}" width="40" height="40">
+</a>
+{% endblock %}
