@@ -19,7 +19,7 @@ parser.add_argument('-st', '--status', type=str, help='Status of the task. D - d
 
 
 def run_next_task(exp_id, executable):
-    url = 'http://dakis.gimbutas.lt/api/%d/next_task/' % exp_id
+    url = 'http://dakis.gimbutas.lt/api/exp/%d/next-task/' % exp_id
     resp = requests.get(url)
     task = resp.json()
     if resp.status_code == 200 and resp.json():

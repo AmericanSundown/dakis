@@ -20,10 +20,24 @@ def index(request):
     })
 
 
+def toggle_exp_status(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if (exp.tasks.filter(status='C') | exp.tasks.filter(status='R')).exists():
+        if exp.status == 'P':
+            exp.status = 'R'
+        else:
+            exp.status = 'P'
+        exp.save()
+    elif exp.tasks.filter(status='D').exists():
+        exp.status = 'D'
+        exp.save()
+    return redirect(exp)
+
+
 def get_next_task(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
     domain = Site.objects.get_current().domain
-    if exp.tasks.filter(status='C').exists():
+    if exp.tasks.filter(status='C').exists() and exp.status == 'R':
         task = exp.tasks.filter(status='C').first()
         task.status = 'R'
         task.save()

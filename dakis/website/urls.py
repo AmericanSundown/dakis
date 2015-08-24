@@ -12,7 +12,8 @@ urlpatterns = [
     url(r'^create-gkls-tasks/(?P<exp_id>\d+)/', views.create_gkls_tasks, name='experiment-create-gkls-tasks'),
 
     url(r'^api/', include('dakis.api.urls')),
-    url(r'^api/(?P<exp_id>\d+)/next_task/', views.get_next_task, name='get-next-task')
+    url(r'^api/exp/(?P<exp_id>\d+)/next-task/', views.get_next_task, name='get-next-task'),
+    url(r'^api/exp/(?P<exp_id>\d+)/toggle-status/', views.toggle_exp_status, name='toggle-exp-status'),
 ]
 
 if settings.DEBUG:

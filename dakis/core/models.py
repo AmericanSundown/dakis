@@ -8,6 +8,12 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Experiment(models.Model):
+    STATUS_CHOICES = (
+        ('C', 'Created'),
+        ('R', 'Running'),
+        ('P', 'Paused'),
+        ('D', 'Done')
+    )
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
 
@@ -45,6 +51,8 @@ class Experiment(models.Model):
         help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
     mistakes = models.TextField(_('Mistakes'), null=True,
         help_text=_('Descriptions of mistakes, which were found in this experiment'))
+
+    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
 
     def __str__(self):
         return '%s  %s  %s  %s' % (self.algorithm, self.neighbours, self.subregion, self.stopping_accuracy)
