@@ -37,7 +37,7 @@ def toggle_exp_status(request, exp_id):
 def get_next_task(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
     domain = Site.objects.get_current().domain
-    if exp.tasks.filter(status='C').exists() and exp.status == 'R':
+    if exp.tasks.filter(status='C').exists() and exp.status in 'CR':
         task = exp.tasks.filter(status='C').first()
         task.status = 'R'
         task.save()
