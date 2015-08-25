@@ -54,11 +54,11 @@
                     <span style='color: red; font-size: small;'>{{ summary.tasks_suspended }}</small>
                   {% endif %}
               </td>
-              <td>{{ summary.calls_avg|floatformat:"-2" }}</td>
-              <td>{{ summary.calls_50 }}</td>
-              <td>{{ summary.calls_100 }}</td>
-              <td>{{ summary.duration_avg|timedelta }}</td>
-              <td>{{ summary.subregions_avg|floatformat:"-2" }}</td>
+              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_avg|floatformat:"-2" }}</td>
+              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_50 }}</td>
+              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_100 }}</td>
+              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.duration_avg|timedelta }}</td>
+              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.subregions_avg|floatformat:"-2" }}</td>
             </tr>
             {% endfor %}
             </tbody>

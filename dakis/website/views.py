@@ -65,19 +65,19 @@ def exp_details(request, exp_id):
 
     summaries = []
     for cls in unique_classes:
-        tasks = exp.tasks.filter(func_cls=cls, status="D")
-        tasks_count = tasks.count()
-        tasks_suspended = exp.tasks.filter(func_cls=cls, status="S").count()
-        if tasks_count:
+        tasks_done = exp.tasks.filter(func_cls=cls, status="D")
+        tasks_suspended = exp.tasks.filter(func_cls=cls, status="S")
+        tasks = tasks_done | tasks_suspended
+        if tasks.exists():
             calls = tasks.order_by('calls').values_list('calls', flat=True)
             subregions = tasks.values_list('subregions', flat=True)
             durations = tasks.values_list('duration', flat=True)
             summary = {
                 'title': cls,
-                'tasks_count': tasks_count,
-                'tasks_suspended': tasks_suspended,
+                'tasks_count': tasks_done.count(),
+                'tasks_suspended': tasks_suspended.count(),
                 'calls_avg': sum([c for c in calls if c])/float(len(calls)),
-                'calls_50': calls[int(tasks_count/2)],
+                'calls_50': calls[len(calls)//2],
                 'calls_100': calls[len(calls)-1],
                 'duration_avg':sum([d for d in durations if d])/float(len(durations)),
                 'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
