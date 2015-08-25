@@ -21,7 +21,12 @@ class Experiment(models.Model):
         help_text=_('This experiment description'))
 
     algorithm = models.CharField(_('Algorithm'), max_length=255, null=True,
-        help_text=_('Name of algorithm'))
+        help_text=_('Unique verbose name of this algorithm'))
+
+    source_code_repository = models.CharField(_('Source code repository'), max_length=255, null=True,
+        help_text=_('Git of Mercurial repository, where source code is stored, e.g. http://github.com/niekas/dakis'))
+    executable = models.CharField(_('Executable'), max_length=255, null=True,
+        help_text=_('Executable file in source code repository, e.g. main.out'))
 
     neighbours = models.CharField(_('Neighbours'), max_length=255, null=True,
         help_text=_('Strategy how neighbours are determined'))
@@ -57,7 +62,7 @@ class Experiment(models.Model):
     status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
 
     def __str__(self):
-        return '%s  %s  %s  %s' % (self.algorithm, self.neighbours, self.subregion, self.stopping_accuracy)
+        return self.algorithm
 
     def get_absolute_url(self):
         return reverse('exp-summary', args=[self.pk])
