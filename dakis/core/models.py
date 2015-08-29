@@ -25,6 +25,8 @@ class Experiment(models.Model):
 
     source_code_repository = models.CharField(_('Source code repository'), max_length=255, null=True,
         help_text=_('Git of Mercurial repository, where source code is stored, e.g. http://github.com/niekas/dakis'))
+    branch = models.CharField(_('Branch'), max_length=255, null=True,
+        help_text=_('Branch of source code repository, need only if its not master branch'))
     executable = models.CharField(_('Executable'), max_length=255, null=True,
         help_text=_('Executable file in source code repository, e.g. main.out'))
 
