@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
 {% load compress from compress %}
 {% load topmenu from websitetags %}
+{% load username from accountstags %}
 {% load messages from websitetags %}
 
 <!DOCTYPE html>
@@ -27,6 +28,17 @@
           <a class="navbar-brand" href="/">
             <img src="{% static 'img/logo.png' %}" width="40" height="40">
           </a>
+          <ul class="nav navbar-nav pull-right">
+            {% if request.user.is_authenticated %}
+            <li><a class="navbar-profile-a" href="{% url 'accounts_settings' %}">
+              <img class="navbar-avatar-img" src="{{ user.profile.get_avatar_url }}">
+              <strong>{% username request.user %}</strong>
+            </a></li>
+            <li><a href="{% url 'accounts_logout' %}">{% trans "Logout" %}</a></li>
+            {% else %}
+            <li><a href="{% url 'accounts_login' %}">{% trans "Login" %}</a></li>
+            {% endif %}
+          </ul>
           {% topmenu %}
         </div>
       </div>

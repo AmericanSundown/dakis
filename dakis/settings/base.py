@@ -137,6 +137,7 @@ COMPRESS_PRECOMPILERS = (
 
 INSTALLED_APPS += (
     'dakis.core',
+    'dakis.accounts',
     'dakis.api',
     'dakis.website',
 )
@@ -206,3 +207,53 @@ TEMPLATE_CONTEXT_PROCESSORS += [
 INSTALLED_APPS += (
     'django.contrib.sites',
 )
+
+
+# django-allauth
+# http://django-allauth.readthedocs.org/
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_AUTO_SIGNUP = False
+ACCOUNT_SIGNUP_FORM_CLASS = 'dakis.accounts.forms.SignupForm'
+
+AUTHENTICATION_BACKENDS = (
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS += [
+    'django.template.context_processors.request',
+    'allauth.socialaccount.context_processors.socialaccount',
+]
+
+INSTALLED_APPS += (
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.persona',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+)
+
+SORTED_AUTH_PROVIDERS = (
+    ('persona', STATIC_URL + 'auth/persona.png'),
+    ('google', STATIC_URL + 'auth/google.png'),
+    ('github', STATIC_URL + 'auth/github.png'),
+)
+
+SORTED_OPENID_PROVIDERS = (
+    dict(name='lp', url='https://launchpad.net/~', pattern='https://launchpad.net/~%s'),
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'persona': {
+        'AUDIENCE': '127.0.0.1',
+    },
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+}

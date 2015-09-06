@@ -16,6 +16,10 @@ urlpatterns = [
     url(r'^api/exp/(?P<exp_id>\d+)/toggle-status/', views.toggle_exp_status, name='toggle-exp-status'),
 ]
 
+urlpatterns += [
+    url(r'^accounts/', include('dakis.accounts.urls')),
+]
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns.append(url(r'^__debug__/', include(debug_toolbar.urls)))
