@@ -15,8 +15,11 @@ from dakis.core.models import Experiment, Task
 
 
 def index(request):
+    exps = Experiment.objects.order_by('-created')
+    if request.user.is_authenticated():
+        exps = exps.filter(author=request.user)
     return render(request, 'website/index.html', {
-        'experiments': Experiment.objects.order_by('-created'),
+        'experiments': exps,
     })
 
 

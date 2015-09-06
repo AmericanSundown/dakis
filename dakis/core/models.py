@@ -16,6 +16,7 @@ class Experiment(models.Model):
     )
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
+    author = models.ForeignKey(User)
 
     description = models.TextField(_('Description'), null=True,
         help_text=_('This experiment description'))
