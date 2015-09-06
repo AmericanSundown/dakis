@@ -13,10 +13,19 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = accounts_models.UserProfile
-        fields = ('first_name', 'last_name', 'email', 'language')
+        fields = ('first_name', 'last_name', 'email', 'language', 'hostname', 'host_password',)
+        widgets = {
+            'host_password': forms.PasswordInput(),
+        }
         help_texts = {
             'email': _(
                 "Will be used for communication. If you want not to get any emails, leave this field empty."
+            ),
+            'hostname': _(
+                "Computing resourses servername with username attached, e.g. mynick@computer.com."
+            ),
+            'host_password': _(
+                "Password of your user in computing resourses server."
             ),
         }
 

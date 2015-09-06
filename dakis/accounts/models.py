@@ -12,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 class UserProfile(models.Model):
     user = models.OneToOneField(auth_models.User, related_name='profile')
     language = models.CharField(_('Language'), max_length=7, choices=settings.LANGUAGES, default='', blank=True)
+    hostname = models.CharField(_('Hostname'), max_length=255, default='', blank=True)
+    host_password = models.CharField(_('Host password'), max_length=255, default='', blank=True)
 
     def get_avatar_url(self):
         '''Returns avatar associated with email or generated identicon, see more:
