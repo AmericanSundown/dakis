@@ -16,7 +16,7 @@ from dakis.core.models import Experiment, Task
 
 def index(request):
     return render(request, 'website/index.html', {
-        'experiments': Experiment.objects.all(),
+        'experiments': Experiment.objects.order_by('-created'),
     })
 
 
