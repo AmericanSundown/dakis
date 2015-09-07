@@ -15,6 +15,8 @@ from django.contrib.sites.models import Site
 
 from dakis.core.models import Experiment, Task
 
+logger = logging.getLogger(__name__)
+
 
 def index(request):
     exps = Experiment.objects.order_by('-created')
@@ -50,6 +52,7 @@ def run_worker(exp, user):
         exp.repository,
         exp.branch,
     )
+    logger.debug('Running: ' + cmd)
 
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
     if not exp.threads:

@@ -91,6 +91,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': str(PROJECT_DIR / 'var/debug.log'),
+        },
         'stdout': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
