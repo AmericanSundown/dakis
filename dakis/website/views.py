@@ -1,5 +1,7 @@
 import datetime
 import json
+import logging
+import subprocess
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -41,8 +43,8 @@ def toggle_exp_status(request, exp_id):
 
 def run_worker(exp, user):
     cmd = 'sshpass -p%s ssh %s "$HOME/.dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
-        user.host_password,
-        user.hostname,
+        user.profile.host_password,
+        user.profile.hostname,
         exp.pk,
         exp.executable,
         exp.repository,
@@ -50,7 +52,10 @@ def run_worker(exp, user):
     )
 
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
-    exp.threads += 1
+    if not exp.threads:
+        exp.threads = 1
+    else:
+        exp.threads += 1
     exp.save()
     return
 
