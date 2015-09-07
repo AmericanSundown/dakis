@@ -8,6 +8,14 @@ from dakis.core.models import Experiment, Task
 class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Experiment
+        exclude = ('author',)
+
+    def create(self, data):
+        user = self.context['request'].user
+        if user.is_authenticated():
+            data['author'] = user
+        return super(ExperimentSerializer, self).create(data)
+
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
