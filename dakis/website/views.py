@@ -28,12 +28,35 @@ def toggle_exp_status(request, exp_id):
     if (exp.tasks.filter(status='C') | exp.tasks.filter(status='R')).exists():
         if exp.status == 'P':
             exp.status = 'R'
+            run_worker(exp, request.user)
         else:
             exp.status = 'P'
+            exp.threads = 0
         exp.save()
     elif exp.tasks.filter(status='D').exists():
         exp.status = 'D'
         exp.save()
+    return redirect(exp)
+
+
+def run_worker(exp, user):
+    cmd = 'sshpass -p%s ssh %s "$HOME/.dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
+        user.host_password,
+        user.hostname,
+        exp.pk,
+        exp.executable,
+        exp.repository,
+        exp.branch,
+    )
+
+    subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+    exp.threads += 1
+    exp.save()
+    return
+
+def run_worker_view(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    run_worker(exp, request.user)
     return redirect(exp)
 
 

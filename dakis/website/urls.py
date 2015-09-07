@@ -13,6 +13,7 @@ urlpatterns = [
 
     url(r'^api/', include('dakis.api.urls')),
     url(r'^api/exp/(?P<exp_id>\d+)/next-task/', views.get_next_task, name='get-next-task'),
+    url(r'^api/exp/(?P<exp_id>\d+)/run/', views.run_worker_view, name='run-worker'),
     url(r'^api/exp/(?P<exp_id>\d+)/toggle-status/', views.toggle_exp_status, name='toggle-exp-status'),
 ]
 
