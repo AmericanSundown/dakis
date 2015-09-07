@@ -16,6 +16,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
+        fields = ('first_name', 'last_name', 'username', 'email')
 
 
 class ExperimentViewSet(viewsets.ModelViewSet):
