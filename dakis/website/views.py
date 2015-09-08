@@ -32,7 +32,11 @@ def toggle_exp_status(request, exp_id):
     if (exp.tasks.filter(status='C') | exp.tasks.filter(status='R')).exists():
         if exp.status == 'P':
             exp.status = 'R'
-            run_worker(exp, request.user)
+            if not request.user.profile.hostname or not request.user.profile.host_password:
+                messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
+            else:
+                run_worker(exp, request.user)
+                messages.success(request, ugettext('New thread was started successfully'))
         else:
             exp.status = 'P'
             exp.threads = 0
@@ -44,7 +48,8 @@ def toggle_exp_status(request, exp_id):
 
 
 def run_worker(exp, user):
-    cmd = 'sshpass -p%s ssh %s "$HOME/.dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
+    cmd = 'sshpass -p%s ssh -o "StrictHostKeyChecking no" %s ' \
+          '"$HOME/.dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
         user.profile.host_password,
         user.profile.hostname,
         exp.pk,
@@ -62,9 +67,14 @@ def run_worker(exp, user):
     exp.save()
     return
 
+
 def run_worker_view(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
-    run_worker(exp, request.user)
+    if not request.user.profile.hostname or not request.user.profile.host_password:
+        messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
+    else:
+        run_worker(exp, request.user)
+        messages.success(request, ugettext('New thread was started successfully'))
     return redirect(exp)
 
 
