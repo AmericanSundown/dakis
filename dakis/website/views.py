@@ -49,7 +49,7 @@ def toggle_exp_status(request, exp_id):
 
 def run_worker(exp, user):
     cmd = 'sshpass -p%s ssh -o "StrictHostKeyChecking no" %s ' \
-          '"$HOME/.dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
+          '".dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
         user.profile.host_password,
         user.profile.hostname,
         exp.pk,
