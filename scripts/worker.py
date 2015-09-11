@@ -109,6 +109,7 @@ def request_to_run_next_task(exp_id):
 
 
 def get_argparser():
+    import argparse
     parser = argparse.ArgumentParser(description='Schedules tasks')
     parser.add_argument('-exp', '--exp_id', type=int, help='Experiment ID', nargs='?', default=None)
     parser.add_argument('-exe', '--executable', type=str, help='Executable file', nargs='?', default=None)
@@ -126,11 +127,12 @@ def get_argparser():
 
     # Prepare environment arguments
     parser.add_argument('-env', '--prepare_environment', help='Create ~/.dakis dir and prepare environment', nargs='?', const=True)
+    return parser
 
 
 def main():
+    global requests
     import requests
-    import argparse
     args = get_argparser().parse_args()
 
     logging.basicConfig(
