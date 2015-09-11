@@ -38,7 +38,7 @@ def run_next_task(exp_id, executable, use_job=False):
             '--gkls_cls=%s' % task['func_cls'],
             '--gkls_fid=%s' % task['func_id'],
             '--task_id=%s' % task['id'],
-            '--callback=%s' % sys.argv[0],   # .strip('./')
+            '--callback=%s' % join(MAIN_DIR, 'worker.py'),
         ]
         try:
             if use_job:
@@ -159,9 +159,8 @@ def main():
             os.remove(job_filename + '.o')
         if os.path.isfile(job_filename + '.e'):
             os.remove(job_filename + '.e')
-
         # run_next_task(exp_id, args.executable, args.job)
-        # request_to_run_next_task(exp_id)
+        request_to_run_next_task(exp_id)
 
 
 if __name__ == '__main__':
