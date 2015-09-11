@@ -74,7 +74,6 @@ def run_worker_view(request, exp_id):
         messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
     else:
         run_worker(exp, request.user)
-        messages.success(request, ugettext('New thread was started successfully'))
     return redirect(exp)
 
 
