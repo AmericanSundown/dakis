@@ -78,12 +78,14 @@ def run_worker_view(request, exp_id):
 
 
 def get_next_task(request, exp_id):
+    logger.debug('Get next task for exp_id=' + str(exp_id))
     exp = get_object_or_404(Experiment, pk=exp_id)
     domain = Site.objects.get_current().domain
     if exp.tasks.filter(status='C').exists() and exp.status in 'CR':
         task = exp.tasks.filter(status='C').first()
         task.status = 'R'
         task.save()
+        logger.debug('Provided task task_id=' + str(task.id))
         return HttpResponse(json.dumps({
             'experiment': 'http://' + domain + reverse('experiment-detail', args=[exp.pk]),
             'func_cls': task.func_cls,
