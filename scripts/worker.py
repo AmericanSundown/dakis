@@ -104,7 +104,7 @@ def prepare_executable(args):
 
 def request_to_run_next_task(exp_id):
     url = 'http://dakis.gimbutas.lt/api/exp/%d/run/' % exp_id
-    resp = requests.post(url)
+    resp = requests.get(url)
     return
 
 
