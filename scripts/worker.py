@@ -48,7 +48,7 @@ def run_next_task(exp_id, executable, use_job=False):
                 job_file.write(' '.join(cmd) + '\n')
                 job_file.close()
                 logging.info('Created job file: %s' % job_filename)
-                add_to_queue_cmd = 'cd {0} && qsub -pe orte 1 -o {1}.o -e {1}.e {1}'.format(JOBS_DIR, job_filename)
+                add_to_queue_cmd = 'qsub -pe orte 1 -o {0}.o -e {0}.e {0}'.format(job_filename)
                 # Specify stdout and stderr paths for qsub and remove them after execution
                 print('Calling command:', add_to_queue_cmd)
                 p1 = subprocess.Popen(add_to_queue_cmd, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # , close_fds=True)
