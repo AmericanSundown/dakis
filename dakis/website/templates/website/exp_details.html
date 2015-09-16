@@ -4,35 +4,44 @@
 
 
 {% block content %}
-  <div class="pull-right">
-    <a href={% url 'experiment-detail' exp.pk %}>
-      <button class='btn btn-primary'>{% trans 'Edit' %}</button>
-    </a>
-    <a href={% url 'toggle-exp-status' exp.pk %}>
-      {% if exp.status == 'P' %}
-        <button class='btn btn-default'>{% trans 'Start' %}</button>
-      {% elif exp.status == 'D' %}
-        <button class='btn btn-default disabled'>{% trans 'Done' %}</button>
-      {% else %}
-        <button class='btn btn-default'>{% trans 'Pause' %}</button>
-      {% endif %}
-    </a>
-    <a href={% url 'experiment-create-gkls-tasks' exp.pk %}>
-      <button class='btn btn-default'>{% trans 'Create GKLS tasks' %}</button>
-    </a>
-    <a href={% url 'task-list' %}>
-      <button class='btn btn-default'>{% trans 'Results' %}</button>
-    </a>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        {% if exp.invalid %}<h2 class="pull-right"><span class="label label-danger">{% trans 'Not valid' %}</span></h2>{% endif %}
+        <h1>{{ exp }}</h1>
+        {% if exp.description %}
+          <p>{{ exp.description }}</p>
+        {% endif %}
+      </div>
+      <div class="col-md-4" style='padding-top: 25px;'>
+        <div class="btn-toolbar">
+          <a href={% url 'experiment-detail' exp.pk %}>
+            <button class='btn btn-primary btn-sm'>{% trans 'Edit' %}</button>
+          </a>
+          <a href={% url 'toggle-exp-status' exp.pk %}>
+            {% if exp.status == 'P' %}
+              <button class='btn btn-default btn-sm'>{% trans 'Start' %}</button>
+            {% elif exp.status == 'D' %}
+              <button class='btn btn-default disabled btn-sm'>{% trans 'Done' %}</button>
+            {% else %}
+              <button class='btn btn-default btn-sm'>{% trans 'Pause' %}</button>
+            {% endif %}
+          </a>
+          <a href={% url 'experiment-create-gkls-tasks' exp.pk %}>
+            <button class='btn btn-default btn-sm'>{% trans 'Create GKLS tasks' %}</button>
+          </a>
+          <a href={% url 'task-list' %} >
+            <button class='btn btn-default btn-sm' >{% trans 'Results' %}</button>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-  <h1>{{ exp }} {% if exp.invalid %}<span class="label label-danger">Invalid</span>{% endif %}</h1>
-  {% if exp.description %}
-    <p>{{ exp.description }}</p>
-  {% endif %}
 
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
-        <div class='text-center'><h3>Tasks summary</h3></div>
+        <div class='text-center'><h3>{% trans 'Tasks summary' %}</h3></div>
           <table class="table table-striped">
             <thead>
               <tr>
@@ -65,7 +74,7 @@
           </table>
       </div>
       <div class="col-md-6">
-        <div class='text-center'><h3>Algorithm details</h3></div>
+        <div class='text-center'><h3>{% trans 'Algorithm details' %}</h3></div>
         <p><small><b>{% trans 'Algorithm' %}</b></small>: {{ exp.algorithm }}</p>
         <p><small><b>{% trans 'Neighbours' %}</b></small>: {{ exp.neighbours }}</p>
         <p><small><b>{% trans 'Simplex selection strategy' %}</b></small>: {{ exp.subregion_selection }}</p>
