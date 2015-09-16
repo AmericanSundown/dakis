@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from rest_framework import filters
 
 from django.contrib.auth.models import User
 
@@ -31,9 +32,13 @@ class ExperimentViewSet(viewsets.ModelViewSet):
     queryset = Experiment.objects.all()
     serializer_class = ExperimentSerializer
 
+
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    filter_fields = ('experiment', 'func_cls')
+    filter_backends = (filters.DjangoFilterBackend,)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

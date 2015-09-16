@@ -24,8 +24,8 @@
                 <button class='btn btn-default btn-sm'>{% trans 'Create GKLS tasks' %}</button>
               </a>
               {% endif %}
-              <a href={% url 'task-list' %} >
-                <button class='btn btn-default btn-sm' >{% trans 'Results' %}</button>
+              <a href="{% url 'task-list' %}?experiment={{ exp.pk }}">
+                <button class='btn btn-default btn-sm' >{% trans 'Tasks' %}</button>
               </a>
             </p>
             <p>
@@ -76,7 +76,7 @@
             <tbody>
             {% for summary in summaries %}
             <tr style="text-align: right">
-              <td>{{ summary.title }}</td>
+                <td><a href="{% url 'task-list' %}?experiment={{ exp.pk }}&func_cls={{ summary.title }}">{{ summary.title }}</td>
               <td>{{ summary.tasks_count }}
                   {% if summary.tasks_suspended %}
                     <span style='color: red; font-size: small;'>{{ summary.tasks_suspended }}</small>
