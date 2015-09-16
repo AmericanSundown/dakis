@@ -36,7 +36,7 @@ class ExperimentViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    filter_fields = ('experiment', 'func_cls')
+    filter_fields = ('experiment', 'func_cls', 'func_id', 'status')
     filter_backends = (filters.DjangoFilterBackend,)
 
 
