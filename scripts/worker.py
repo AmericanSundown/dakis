@@ -155,11 +155,9 @@ def main():
         job_filename = join(JOBS_DIR, 'e%dc%df%d.sh' % (exp_id, resp_json['func_cls'], resp_json['func_id']))
         if os.path.isfile(job_filename):
             os.remove(job_filename)
-        if os.path.isfile(job_filename + '.o'):
-            os.remove(job_filename + '.o')
-        if os.path.isfile(job_filename + '.e'):
-            os.remove(job_filename + '.e')
-        # run_next_task(exp_id, args.executable, args.job)
+        for file in os.listdir(JOBS_DIR):
+            if file.endswith('.o') or file.endswith('.e'):
+                os.remove(join(JOBS_DIR, file))
         request_to_run_next_task(exp_id)
 
 
