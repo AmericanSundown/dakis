@@ -9,7 +9,10 @@
     <div class="col-md-5">
       <h2>{% trans "Algorithms" %}</h2>
       {% for experiment in experiments %}
-        <p><a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a></p>
+        <p>
+          <a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a>
+          {% if experiment.threads %}<img src="{% static 'img/in-progress.gif' %}">{% endif %}
+        </p>
       {% endfor %}
     </div>
 
