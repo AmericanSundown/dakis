@@ -36,6 +36,10 @@ def toggle_exp_status(request, exp_id):
                 messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
             else:
                 run_worker(exp, request.user)
+                if not exp.threads:
+                    exp.threads = 1
+                else:
+                    exp.threads += 1
                 messages.success(request, ugettext('New thread was started successfully'))
         else:
             exp.status = 'P'
@@ -60,10 +64,6 @@ def run_worker(exp, user):
     logger.debug('Running: ' + cmd)
 
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
-    if not exp.threads:
-        exp.threads = 1
-    else:
-        exp.threads += 1
     exp.save()
     return
 
@@ -75,6 +75,21 @@ def run_worker_view(request, exp_id):
     if not user.profile.hostname or not user.profile.host_password:
         messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
     else:
+        run_worker(exp, user)
+    return redirect(exp)
+
+
+def start_worker_view(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    user = exp.author
+    if not user.profile.hostname or not user.profile.host_password:
+        messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
+    else:
+        if not exp.threads:
+            exp.threads = 1
+        else:
+            exp.threads += 1
+        exp.save()
         run_worker(exp, user)
     return redirect(exp)
 
