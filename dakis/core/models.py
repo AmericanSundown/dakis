@@ -13,7 +13,7 @@ class ExperimentManager(models.Manager):
         # General purpose fields
         new_exp.author = exp.author
         new_exp.description = exp.description
-        new_exp.algorithm = exp.algorithm
+        new_exp.algorithm = exp.algorithm + ' (copy)'
         new_exp.repository = exp.repository
         new_exp.branch = exp.branch
         new_exp.executable = exp.executable
