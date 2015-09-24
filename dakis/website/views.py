@@ -111,7 +111,7 @@ def get_next_task(request, exp_id):
 
 
 def create_gkls_tasks(request, exp_id):
-    exp = Experiment.objects.get(pk=exp_id)
+    exp = get_object_or_404(Experiment, pk=exp_id)
     if exp.tasks.all().count() < 800:
         for cls in range(1, 9):
             for fid in range(1, 101):
@@ -120,7 +120,7 @@ def create_gkls_tasks(request, exp_id):
 
 
 def exp_details(request, exp_id):
-    exp = Experiment.objects.get(pk=exp_id)
+    exp = get_object_or_404(Experiment, pk=exp_id)
     unique_classes = exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct()
 
     summaries = []
@@ -148,3 +148,10 @@ def exp_details(request, exp_id):
         'exp': exp,
         'summaries': summaries,
     })
+
+
+def fork_exp(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    # Creates new Experiment instance and copies all its fields.
+    new_exp = Experiment.objects.dublicate(exp)
+    return redirect(new_exp)

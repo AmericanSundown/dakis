@@ -7,6 +7,32 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 
+class ExperimentManager(models.Manager):
+    def dublicate(self, exp):
+        new_exp = Experiment.objects.create()
+        # General purpose fields
+        new_exp.author = exp.author
+        new_exp.description = exp.description
+        new_exp.algorithm = exp.algorithm
+        new_exp.repository = exp.repository
+        new_exp.branch = exp.branch
+        new_exp.executable = exp.executable
+        new_exp.max_duration = exp.max_duration
+        # Algorithm specific fields
+        new_exp.neighbours = exp.neighbours
+        new_exp.subregion_selection = exp.subregion_selection
+        new_exp.lipschitz_estimation = exp.lipschitz_estimation
+        new_exp.subregion_division = exp.subregion_division
+        new_exp.stopping_criteria = exp.stopping_criteria
+        new_exp.stopping_accuracy = exp.stopping_accuracy
+        new_exp.subregion = exp.subregion
+        new_exp.inner_problem_accuracy = exp.inner_problem_accuracy
+        new_exp.inner_problem_iters = exp.inner_problem_iters
+        new_exp.inner_problem_division = exp.inner_problem_division
+        new_exp.save()
+        return new_exp
+
+
 class Experiment(models.Model):
     STATUS_CHOICES = (
         ('C', 'Created'),
@@ -14,6 +40,9 @@ class Experiment(models.Model):
         ('P', 'Paused'),
         ('D', 'Done')
     )
+
+    objects = ExperimentManager()
+
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
     author = models.ForeignKey(User, null=True)
@@ -66,7 +95,6 @@ class Experiment(models.Model):
     threads = models.IntegerField(_('Threads'), null=True,
         help_text=_('How many threads are currently running'))
     max_duration = models.FloatField(_('Max one execution duration in seconds'), null=True)
-
 
     def __str__(self):
         return self.algorithm
