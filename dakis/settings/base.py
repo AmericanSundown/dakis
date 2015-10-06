@@ -241,6 +241,11 @@ INSTALLED_APPS += (
     'allauth.socialaccount.providers.github',
 )
 
+# https://github.com/derek-schaefer/django-json-field
+INSTALLED_APPS += (
+    'json_field',
+)
+
 SORTED_AUTH_PROVIDERS = (
     ('persona', STATIC_URL + 'auth/persona.png'),
     ('google', STATIC_URL + 'auth/google.png'),

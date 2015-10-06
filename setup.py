@@ -6,6 +6,8 @@ setup(
     license='AGPLv3+',
     packages=find_packages(),
     install_requires=[
+        'python-dateutil',  # Requirement for django-json-field
+        'six',              # Requirement for django-json-field
         'django',
         'django-nose',
         'django-compressor',
@@ -17,6 +19,7 @@ setup(
         'django-allauth',
         'djangorestframework',
         'django-filter',
+        'django-json-field',
         'factory_boy',
         'fake-factory',
         'unidecode',
