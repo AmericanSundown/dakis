@@ -1,5 +1,6 @@
 from autoslug import AutoSlugField
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
+from json_field import JSONField
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -46,11 +47,12 @@ class Experiment(models.Model):
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
     author = models.ForeignKey(User, null=True)
+
     description = models.TextField(_('Description'), null=True,
         help_text=_('This experiment description'))
-
     algorithm = models.CharField(_('Algorithm'), max_length=255, null=True,
         help_text=_('Unique verbose name of this algorithm'))
+    max_duration = models.FloatField(_('Max one execution duration in seconds'), null=True)
 
     repository = models.CharField(_('Source code repository'), max_length=255, null=True,
         help_text=_('Git of Mercurial repository, where source code is stored, e.g. http://github.com/niekas/dakis'))
@@ -58,6 +60,9 @@ class Experiment(models.Model):
         help_text=_('Branch of source code repository, need only if its not master branch'))
     executable = models.CharField(_('Executable'), max_length=255, null=True,
         help_text=_('Executable file in source code repository, e.g. main.out'))
+
+    details = JSONField(_('Algorithm details'), null=True, default='',
+        help_text=_('Algorithm details in JSON format'))
 
     neighbours = models.CharField(_('Neighbours'), max_length=255, null=True,
         help_text=_('Strategy how neighbours are determined'))
@@ -94,7 +99,6 @@ class Experiment(models.Model):
 
     threads = models.IntegerField(_('Threads'), null=True,
         help_text=_('How many threads are currently running'))
-    max_duration = models.FloatField(_('Max one execution duration in seconds'), null=True)
 
     def __str__(self):
         return self.algorithm
@@ -110,14 +114,18 @@ class Task(models.Model):
         ('S', 'Suspended'),
         ('D', 'Done')
     )
+    duration = models.FloatField(_('Duration'), null=True, help_text=_('Task execution duration in seconds'))
+    experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,
+                    help_text=_('ID of experiment to which this task is assigned to'))
+    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
+    details = JSONField(_('Task details'), null=True, default='',
+        help_text=_('Task execution details in JSON format'))
+
+    # Algorithm specific
     func_name = models.CharField(_('Function name'), null=True, max_length=255, help_text=_('Function name'))
     func_cls = models.IntegerField(_('GKLS class'), null=True, help_text=_('GKLS function class'))
     func_id = models.IntegerField(_('GKLS id'), null=True, help_text=_('GKLS function id'))
     calls = models.IntegerField(_('Calls'), null=True, help_text=_('Calls'))
     subregions = models.IntegerField(_('Subregions'), null=True, help_text=_('Subregions in final partition'))
-    duration = models.FloatField(_('Duration'), null=True, help_text=_('Task execution duration in seconds'))
     f_min = models.FloatField(_('F min'), null=True, help_text=_('Value of minimum, which managed to determine'))
     x_min = models.CharField(_('X min'), max_length=255, null=True, help_text=_('Determined minimum coordinates'))
-    experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,
-                    help_text=_('ID of experiment to which this task is assigned to'))
-    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
