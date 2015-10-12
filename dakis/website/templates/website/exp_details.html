@@ -32,7 +32,7 @@
               </a>
             </p>
             <p>
-              {% if exp.status == 'P' %}
+              {% if exp.status in 'CP' %}
                 <a href={% url 'toggle-exp-status' exp.pk %}>
                   <button class='btn btn-default btn-sm'>
                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
