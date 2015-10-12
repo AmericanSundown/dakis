@@ -8,32 +8,6 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 
-class ExperimentManager(models.Manager):
-    def dublicate(self, exp):
-        new_exp = Experiment.objects.create()
-        # General purpose fields
-        new_exp.author = exp.author
-        new_exp.description = exp.description
-        new_exp.algorithm = exp.algorithm + ' (copy)'
-        new_exp.repository = exp.repository
-        new_exp.branch = exp.branch
-        new_exp.executable = exp.executable
-        new_exp.max_duration = exp.max_duration
-        # Algorithm specific fields
-        new_exp.neighbours = exp.neighbours
-        new_exp.subregion_selection = exp.subregion_selection
-        new_exp.lipschitz_estimation = exp.lipschitz_estimation
-        new_exp.subregion_division = exp.subregion_division
-        new_exp.stopping_criteria = exp.stopping_criteria
-        new_exp.stopping_accuracy = exp.stopping_accuracy
-        new_exp.subregion = exp.subregion
-        new_exp.inner_problem_accuracy = exp.inner_problem_accuracy
-        new_exp.inner_problem_iters = exp.inner_problem_iters
-        new_exp.inner_problem_division = exp.inner_problem_division
-        new_exp.save()
-        return new_exp
-
-
 class Experiment(models.Model):
     STATUS_CHOICES = (
         ('C', 'Created'),
@@ -41,8 +15,6 @@ class Experiment(models.Model):
         ('P', 'Paused'),
         ('D', 'Done')
     )
-
-    objects = ExperimentManager()
 
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
@@ -105,6 +77,45 @@ class Experiment(models.Model):
 
     def get_absolute_url(self):
         return reverse('exp-summary', args=[self.pk])
+
+    def dublicate(self):
+        new_exp = Experiment.objects.create()
+        # General purpose fields
+        new_exp.author = self.author
+        new_exp.description = self.description
+        new_exp.algorithm = self.algorithm + ' (copy)'
+        new_exp.repository = self.repository
+        new_exp.branch = self.branch
+        new_exp.executable = self.executable
+        new_exp.max_duration = self.max_duration
+        # Algorithm specific fields
+        new_exp.neighbours = self.neighbours
+        new_exp.subregion_selection = self.subregion_selection
+        new_exp.lipschitz_estimation = self.lipschitz_estimation
+        new_exp.subregion_division = self.subregion_division
+        new_exp.stopping_criteria = self.stopping_criteria
+        new_exp.stopping_accuracy = self.stopping_accuracy
+        new_exp.subregion = self.subregion
+        new_exp.inner_problem_accuracy = self.inner_problem_accuracy
+        new_exp.inner_problem_iters = self.inner_problem_iters
+        new_exp.inner_problem_division = self.inner_problem_division
+        new_exp.save()
+        return new_exp
+
+    def move_data_to_details_field(self):
+        if self.details is None:
+            self.details = dict()
+        self.details['neighbours'] = self.neighbours
+        self.details['subregion_selection'] = self.subregion_selection
+        self.details['lipschitz_estimation'] = self.lipschitz_estimation
+        self.details['subregion_division'] = self.subregion_division
+        self.details['stopping_criteria'] = self.stopping_criteria
+        self.details['stopping_accuracy'] = self.stopping_accuracy
+        self.details['subregion'] = self.subregion
+        self.details['inner_problem_accuracy'] = self.inner_problem_accuracy
+        self.details['inner_problem_iters'] = self.inner_problem_iters
+        self.details['inner_problem_division'] = self.inner_problem_division
+        self.save()
 
 
 class Task(models.Model):

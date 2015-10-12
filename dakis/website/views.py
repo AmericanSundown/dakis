@@ -153,5 +153,5 @@ def exp_details(request, exp_id):
 def fork_exp(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
     # Creates new Experiment instance and copies all its fields.
-    new_exp = Experiment.objects.dublicate(exp)
+    new_exp = exp.dublicate()
     return redirect(new_exp)
