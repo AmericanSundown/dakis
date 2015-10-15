@@ -96,9 +96,11 @@ def prepare_executable(args):
     if not os.path.exists(executable):  # Note: code version will be cached, new commits won't be pulled
         if not os.path.exists(exe_dir):
             cmd = 'git clone {0} {1} && cd {1} && git fetch origin {2} && git checkout {2} && git pull -r && make'.format(repository, exe_dir, branch)
-            subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+            proc = subprocess.Popen(cmd, shell=True)
+            proc.communicate()
         else:
-            subprocess.Popen('cd %s && git pull -r && make' % exe_dir, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+            proc = subprocess.Popen('cd %s && git pull -r && make' % exe_dir, shell=True)
+            proc.communicate()
     return executable
 
 
