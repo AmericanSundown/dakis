@@ -47,6 +47,7 @@ def toggle_exp_status(request, exp_id):
         exp.save()
     elif exp.tasks.filter(status='D').exists():
         exp.status = 'D'
+        exp.threads = 0
         exp.save()
     return redirect(exp)
 
