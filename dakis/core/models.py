@@ -99,6 +99,7 @@ class Experiment(models.Model):
         new_exp.inner_problem_accuracy = self.inner_problem_accuracy
         new_exp.inner_problem_iters = self.inner_problem_iters
         new_exp.inner_problem_division = self.inner_problem_division
+        new_exp.invalid = self.invalid
         new_exp.save()
         return new_exp
 
