@@ -156,3 +156,22 @@ def fork_exp(request, exp_id):
     # Creates new Experiment instance and copies all its fields.
     new_exp = exp.dublicate()
     return redirect(new_exp)
+
+
+def reset_exp_suspended_tasks(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    for task in exp.tasks.all():
+        if task.status == 'S':
+            task.status = 'C'
+            task.save()
+    return redirect(exp)
+
+
+def reset_cls_suspended_tasks(request, exp_id, func_cls):
+    '''Resets all suspended tasks in same class as provided task'''
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    for task in exp.tasks.filter(func_cls=func_cls):
+        if task.status == 'S':
+            task.status = 'C'
+            task.save()
+    return redirect(exp)
