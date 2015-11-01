@@ -7,6 +7,8 @@ from dakis.core.models import Experiment, Task
 
 
 class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(label='ID', read_only=True)
+
     class Meta:
         model = Experiment
         exclude = ('author',)
@@ -19,8 +21,11 @@ class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(label='ID', read_only=True)
+
     class Meta:
         model = Task
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
