@@ -10,8 +10,14 @@
       <h2>{% trans "Algorithms" %}</h2>
       {% for experiment in experiments %}
         <p>
-          <a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a>
-          {% if experiment.threads %}<img src="{% static 'img/in-progress.gif' %}">{% endif %}
+          <a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a>{% if experiment.threads %}<img src="{% static 'img/in-progress.gif' %}">{% endif %}
+          {% if experiment.children.all %}
+            <a class="hide_children"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></a>
+            <a class="show_children"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+            <div class="children">
+            {% include 'website/exp_children.html' with experiments=experiment.children.all %}
+            </div>
+          {% endif %}
         </p>
       {% endfor %}
     </div>
