@@ -62,7 +62,7 @@ class Experiment(models.Model):
     inner_problem_division = models.CharField(_('Division strategy in inner problem'), max_length=255, null=True,
         help_text=_('Inner problem subregion division strategy'))
 
-    invalid = models.BooleanField(_('Not valid'), default=True,
+    invalid = models.BooleanField(_('Not valid'), default=False,
         help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
     mistakes = models.TextField(_('Mistakes'), null=True,
         help_text=_('Descriptions of mistakes, which were found in this experiment'))
@@ -71,6 +71,10 @@ class Experiment(models.Model):
 
     threads = models.IntegerField(_('Threads'), null=True,
         help_text=_('How many threads are currently running'))
+
+    is_major = models.BooleanField(_('Is major'), default=False,
+        help_text=_('Is this algorithm unique? And should it be used for comparison as its algorithm class representative?'))
+
 
     def __str__(self):
         return self.algorithm
