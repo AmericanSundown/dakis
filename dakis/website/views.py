@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def index(request):
-    exps = Experiment.objects.order_by('-created')
+    exps = Experiment.objects.filter(is_major=True).order_by('-created')
     if request.user.is_authenticated():
         exps = exps.filter(author=request.user)
     return render(request, 'website/index.html', {
