@@ -75,6 +75,7 @@ class Experiment(models.Model):
     is_major = models.BooleanField(_('Is major'), default=False,
         help_text=_('Is this algorithm unique? And should it be used for comparison as its algorithm class representative?'))
 
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     def __str__(self):
         return self.algorithm
@@ -104,6 +105,7 @@ class Experiment(models.Model):
         new_exp.inner_problem_iters = self.inner_problem_iters
         new_exp.inner_problem_division = self.inner_problem_division
         new_exp.invalid = self.invalid
+        new_exp.parent = self
         new_exp.save()
         return new_exp
 
