@@ -40,7 +40,7 @@ def toggle_exp_status(request, exp_id):
                     exp.threads = 1
                 else:
                     exp.threads += 1
-                messages.success(request, ugettext('New thread was started successfully'))
+                # messages.success(request, ugettext('New thread was started successfully'))
         else:
             exp.status = 'P'
             exp.threads = 0
