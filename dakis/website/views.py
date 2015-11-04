@@ -30,7 +30,7 @@ def index(request):
 def toggle_exp_status(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
     if (exp.tasks.filter(status='C') | exp.tasks.filter(status='R')).exists():
-        if exp.status != 'P':
+        if exp.status != 'R':
             exp.status = 'R'
             if not request.user.profile.hostname or not request.user.profile.host_password:
                 messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
