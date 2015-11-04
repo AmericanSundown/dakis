@@ -44,7 +44,7 @@ def run_next_task(exp_id, executable, use_job=False):
             if use_job:
                 job_filename = join(JOBS_DIR, 'e%dc%df%d.sh' % (exp_id, task['func_cls'], task['func_id']))
                 job_file = open(job_filename, 'w')
-                job_file.write('#!/bin/bash\n#$ -j y\n#$ -S /bin/bash\n#$ -cwd\nmpirun -np 1 ')  # Header
+                job_file.write('#!/bin/bash\n#$ -j y\n#$ -l h_rt=12:00:00\n#$ -S /bin/bash\n#$ -cwd\nmpirun -np 1 ')  # Header
                 job_file.write(' '.join(cmd) + '\n')
                 job_file.close()
                 logging.info('Created job file: %s' % job_filename)
