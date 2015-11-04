@@ -138,11 +138,14 @@ def exp_details(request, exp_id):
                 'tasks_count': tasks_done.count(),
                 'tasks_suspended': tasks_suspended.count(),
                 'calls_avg': sum([c for c in calls if c])/float(len(calls)),
-                'calls_50': calls[len(calls)//2],
                 'calls_100': calls[len(calls)-1],
                 'duration_avg':sum([d for d in durations if d])/float(len(durations)),
                 'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
             }
+            if len(calls) % 2 == 1:
+                summary['calls_50'] = calls[len(calls)//2-1]
+            else:
+                summary['calls_50'] = (calls[len(calls)//2-1] + calls[len(calls)//2])/2
             summaries.append(summary)
 
     return render(request, 'website/exp_details.html', {
