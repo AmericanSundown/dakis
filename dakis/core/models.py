@@ -132,6 +132,10 @@ class Task(models.Model):
         ('S', 'Suspended'),
         ('D', 'Done')
     )
+
+    created = CreationDateTimeField()
+    modified = ModificationDateTimeField()
+
     duration = models.FloatField(_('Duration'), null=True, help_text=_('Task execution duration in seconds'))
     experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,
                     help_text=_('ID of experiment to which this task is assigned to'))
