@@ -17,8 +17,8 @@ urlpatterns = [
     url(r'^api/exp/(?P<exp_id>\d+)/next-task/', views.get_next_task, name='get-next-task'),
     url(r'^api/exp/(?P<exp_id>\d+)/run/', views.run_worker_view, name='run-worker'),
     url(r'^api/exp/(?P<exp_id>\d+)/start/', views.start_worker_view, name='start-worker'),
-    url(r'^api/exp/(?P<exp_id>\d+)/reset-suspended-tasks/', views.reset_exp_suspended_tasks, name='reset-exp-suspended-tasks'),
-    url(r'^api/exp/(?P<exp_id>\d+)/cls/(?P<func_cls>\d+)/reset-suspended-tasks/', views.reset_cls_suspended_tasks, name='reset-cls-suspended-tasks'),
+    url(r'^api/exp/(?P<exp_id>\d+)/reset-tasks/(?P<task_status>\w{1})/', views.reset_exp_tasks, name='reset-exp-tasks'),
+    url(r'^api/exp/(?P<exp_id>\d+)/cls/(?P<func_cls>\d+)/reset-tasks/(?P<task_status>\w{1})/', views.reset_cls_tasks, name='reset-cls-tasks'),
     url(r'^api/exp/(?P<exp_id>\d+)/toggle-status/', views.toggle_exp_status, name='toggle-exp-status'),
 ]
 

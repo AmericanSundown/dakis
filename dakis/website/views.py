@@ -158,20 +158,20 @@ def fork_exp(request, exp_id):
     return redirect(new_exp)
 
 
-def reset_exp_suspended_tasks(request, exp_id):
+def reset_exp_tasks(request, exp_id, task_status):
     exp = get_object_or_404(Experiment, pk=exp_id)
     for task in exp.tasks.all():
-        if task.status == 'S':
+        if task.status == task_status:
             task.status = 'C'
             task.save()
     return redirect(exp)
 
 
-def reset_cls_suspended_tasks(request, exp_id, func_cls):
+def reset_cls_tasks(request, exp_id, func_cls, task_status):
     '''Resets all suspended tasks in same class as provided task'''
     exp = get_object_or_404(Experiment, pk=exp_id)
     for task in exp.tasks.filter(func_cls=func_cls):
-        if task.status == 'S':
+        if task.status == task_status:
             task.status = 'C'
             task.save()
     return redirect(exp)
