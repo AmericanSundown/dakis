@@ -86,7 +86,7 @@
                   {% endif %}
               </td>
               <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_avg|floatformat:"-2" }}</td>
-              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_50 }}</td>
+              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_50|floatformat }}</td>
               <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_100 }}</td>
               <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.duration_avg|timedelta }}</td>
               <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.subregions_avg|floatformat:"-2" }}</td>
