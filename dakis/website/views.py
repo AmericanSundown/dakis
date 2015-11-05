@@ -143,7 +143,7 @@ def exp_details(request, exp_id):
                 'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
             }
             if len(calls) % 2 == 1:
-                summary['calls_50'] = calls[len(calls)//2-1]
+                summary['calls_50'] = calls[len(calls)//2]
             else:
                 summary['calls_50'] = (calls[len(calls)//2-1] + calls[len(calls)//2])/2
             summaries.append(summary)
