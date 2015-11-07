@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load trans blocktrans from i18n %}
+{% load timedelta idx from websitetags %}
+
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-9">
+        {# {% if exp.invalid %}<h2 class="pull-right"><span class="label label-danger">{% trans 'Not valid' %}</span></h2>{% endif %} #}
+        <h1>Comparing experiments</h1>
+        {% for exp in exps %}
+          <p>{{ exp }}</p>
+        {% endfor %}
+      </div>
+      <div class="col-md-3" style='padding-top: 25px;'>
+        {% if user.is_authenticated %}
+          <div class="btn-toolbar">
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <div class='text-center'><h3>{% trans 'Tasks summary' %}</h3></div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{% trans 'Class' %}</th>
+                <th>{% trans 'Tasks' %}</th>
+                <th>{% trans 'CallsAvg' %}</th>
+                <th>{% trans 'Calls50' %}</th>
+                <th>{% trans 'Calls100' %}</th>
+                <th>{% trans 'DurationAvg' %}</th>
+                <th>{% trans 'SubregAvg' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for summary in summaries %}
+              {% for algorithm in summary.algorithm %}
+                {% with forloop.counter0 as i %}
+                <tr style="text-align: right">
+                  {% if i == 0 %}
+                  <td rowspan="{{ summary.cls|length }}" class="talble-cls-cell"><a href="{% url 'task-list' %}?experiment={{ summary.exp_pk|idx:i }}&func_cls={{ summary.cls|idx:i }}">{{ summary.cls|idx:i }}</td>
+                  {% endif %}
+                  <td>{{ summary.tasks_count|idx:i }}
+                    {% if summary.tasks_suspended|idx:i %}
+                      <span style='color: red; font-size: small;'>{{ summary.tasks_suspended|idx:i }}</small>
+                    {% endif %}
+                  </td>
+                  <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.calls_avg|idx:i|floatformat:"-2" }}</td>
+                  <td>{% if summary.tasks_suspended|idx:i > summary.tasks_count|idx:i %}&gt;{% endif %}{{ summary.calls_50|idx:i|floatformat }}</td>
+                  <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.calls_100|idx:i }}</td>
+                  <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.duration_avg|idx:i|timedelta }}</td>
+                  <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.subregions_avg|idx:i|floatformat:"-2" }}</td>
+                </tr>
+                {% endwith %}
+              {% endfor %}
+            {% endfor %}
+            </tbody>
+          </table>
+      </div>
+      <div class="col-md-4">
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

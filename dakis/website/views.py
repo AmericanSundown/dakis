@@ -178,3 +178,60 @@ def reset_cls_tasks(request, exp_id, func_cls, task_status):
             task.status = 'C'
             task.save()
     return redirect(exp)
+
+
+def compare_exps(request):
+    exp_pks = request.GET.get('exps', '').split(',')
+    exps = []
+    unique_classes = set()
+    for exp_pk in exp_pks:
+        exp = get_object_or_404(Experiment, pk=exp_pk)
+        exps.append(exp)
+
+        for cls in exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct():
+            unique_classes.add(cls)
+
+    # list detail exp
+    summaries = []
+    for cls in unique_classes:
+        summary = {
+            'algorithm': [],
+            'exp_pk': [],
+            'cls': [],
+            'title': [],     # How to mark, which is the highest? Should I pack color too? - simples solution.
+            'tasks_count': [],
+            'tasks_suspended': [],
+            'calls_avg': [],
+            'calls_50': [],
+            'calls_100': [],
+            'duration_avg': [],
+            'subregions_avg': [],
+        }
+
+        for exp in exps:
+            tasks_done = exp.tasks.filter(func_cls=cls, status="D")
+            tasks_suspended = exp.tasks.filter(func_cls=cls, status="S")
+            tasks = tasks_done | tasks_suspended
+            if tasks.exists():
+                calls = tasks.order_by('calls').values_list('calls', flat=True)
+                subregions = tasks.values_list('subregions', flat=True)
+                durations = tasks.values_list('duration', flat=True)
+                summary['algorithm'].append(exp.algorithm)
+                summary['exp_pk'].append(exp.pk)
+                summary['cls'].append(cls)
+                summary['tasks_count'].append(tasks_done.count())
+                summary['tasks_suspended'].append(tasks_suspended.count())
+                summary['calls_avg'].append(sum([c for c in calls if c])/float(len(calls)))
+                summary['calls_100'].append(calls[len(calls)-1])
+                summary['duration_avg'].append(sum([d for d in durations if d])/float(len(durations)))
+                summary['subregions_avg'].append(sum([s for s in subregions if s])/float(len(subregions)))
+                if len(calls) % 2 == 1:
+                    summary['calls_50'].append(calls[len(calls)//2])
+                else:
+                    summary['calls_50'].append((calls[len(calls)//2-1] + calls[len(calls)//2])/2)
+        summaries.append(summary)
+
+    return render(request, 'website/exps_comparison.html', {
+        'exps': exps,
+        'summaries': summaries,
+    })

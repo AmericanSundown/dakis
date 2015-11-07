@@ -63,3 +63,8 @@ def timedelta_filter(value):
 @register.simple_tag(name='formrenderer', takes_context=True)
 def formrenderer_filter(context, form):
     return mark_safe(formrenderer.render_fields(context['request'], form))
+
+
+@register.filter
+def idx(d, key):
+    return d[key]
