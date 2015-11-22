@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.contrib.sites.models import Site
 
 from dakis.core.models import Experiment, Task
+from dakis.website.forms import PropertyForm
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,23 @@ def toggle_exp_status(request, exp_id):
         exp.status = 'D'
         exp.threads = 0
         exp.save()
+    return redirect(exp)
+
+
+def add_exp_property(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if request.method == 'POST':
+        form = PropertyForm(request.POST)
+        if form.is_valid():
+            exp.details.append((form.cleaned_data['name'], form.cleaned_data['value']))
+            exp.save()
+    return redirect(exp)
+
+
+def remove_exp_property(request, exp_id, prop_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    exp.details.pop(int(prop_id))
+    exp.save()
     return redirect(exp)
 
 

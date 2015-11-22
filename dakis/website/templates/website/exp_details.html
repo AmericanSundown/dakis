@@ -99,8 +99,17 @@
         <div class='text-center'><h3>{% trans 'Algorithm details' %}</h3></div>
         <p><small><b>{% trans 'Algorithm' %}</b></small>: {{ exp.algorithm }}</p>
         {% for name, value in exp.details %}
-            <p><small><b>{{ name }}</b></small>: {{ value }}</p>
+        <p><small><b>{{ name }}</b></small>: {{ value }}  &nbsp;<b><a class="remove-param-button" href="{% url 'remove-exp-property' exp.pk forloop.counter0 %}">x</a></b></p>
         {% endfor %}
+        <div class="form-group">
+          <form method="post" action="{% url 'add-exp-property' exp.pk %}">{% csrf_token %}
+            <small>
+              <b><input class="shadow-input" type="text" name="name" style="width: 80px" placeholder=" name"></input>: </b>
+                 <input class="shadow-input" type="text" name="value" placeholder=" value" style="width: 80px"></input>
+                 <button class="btn btn-xs">Add</button>
+            </small>
+          </form>
+        </div>
         {% if exp.mistakes %}
           <p><small><b>{% trans 'mistakes' %}</b></small>: {{ exp.mistakes }}</p>
         {% endif %}
