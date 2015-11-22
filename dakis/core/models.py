@@ -110,18 +110,18 @@ class Experiment(models.Model):
         return new_exp
 
     def move_data_to_details_field(self):
-        if self.details is None:
-            self.details = dict()
-        self.details['neighbours'] = self.neighbours
-        self.details['subregion_selection'] = self.subregion_selection
-        self.details['lipschitz_estimation'] = self.lipschitz_estimation
-        self.details['subregion_division'] = self.subregion_division
-        self.details['stopping_criteria'] = self.stopping_criteria
-        self.details['stopping_accuracy'] = self.stopping_accuracy
-        self.details['subregion'] = self.subregion
-        self.details['inner_problem_accuracy'] = self.inner_problem_accuracy
-        self.details['inner_problem_iters'] = self.inner_problem_iters
-        self.details['inner_problem_division'] = self.inner_problem_division
+        if type(self.details) is not list:
+            self.details = []
+        self.details.append(('Neighbours', self.neighbours))
+        self.details.append(('Subregion selection', self.subregion_selection))
+        self.details.append(('Lipschitz estimation', self.lipschitz_estimation))
+        self.details.append(('Subregion', self.subregion))
+        self.details.append(('Subregion division', self.subregion_division))
+        self.details.append(('Stopping criteria', self.stopping_criteria))
+        self.details.append(('Stopping accuracy', self.stopping_accuracy))
+        self.details.append(('Inner problem accuracy', self.inner_problem_accuracy))
+        self.details.append(('Inner problem iters', self.inner_problem_iters))
+        self.details.append(('Inner problem division', self.inner_problem_division))
         self.save()
 
 

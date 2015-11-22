@@ -98,16 +98,9 @@
       <div class="col-md-6">
         <div class='text-center'><h3>{% trans 'Algorithm details' %}</h3></div>
         <p><small><b>{% trans 'Algorithm' %}</b></small>: {{ exp.algorithm }}</p>
-        <p><small><b>{% trans 'Neighbours' %}</b></small>: {{ exp.neighbours }}</p>
-        <p><small><b>{% trans 'Simplex selection strategy' %}</b></small>: {{ exp.subregion_selection }}</p>
-        <p><small><b>{% trans 'Simplex division strategy' %}</b></small>: {{ exp.subregion_division }}</p>
-        <p><small><b>{% trans 'Lipschitz estimation strategy' %}</b></small>: {{ exp.lipschitz_estimation }}</p>
-        <p><small><b>{% trans 'Subregion' %}</b></small>: {{ exp.subregion }}</p>
-        <p><small><b>{% trans 'Stopping criteria' %}</b></small>: {{ exp.stopping_criteria }}</p>
-        <p><small><b>{% trans 'Stopping accuracy' %}</b></small>: {{ exp.stopping_accuracy }}</p>
-        <p><small><b>{% trans 'Inner problem accuracy' %}</b></small>: {{ exp.inner_problem_accuracy }}</p>
-        <p><small><b>{% trans 'Inner problem iters' %}</b></small>: {{ exp.inner_problem_iters }}</p>
-        <p><small><b>{% trans 'Inner problem division' %}</b></small>: {{ exp.inner_problem_division }}</p>
+        {% for name, value in exp.details %}
+            <p><small><b>{{ name }}</b></small>: {{ value }}</p>
+        {% endfor %}
         {% if exp.mistakes %}
           <p><small><b>{% trans 'mistakes' %}</b></small>: {{ exp.mistakes }}</p>
         {% endif %}
