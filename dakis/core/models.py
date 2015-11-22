@@ -68,16 +68,7 @@ class Experiment(models.Model):
         new_exp.executable = self.executable
         new_exp.max_duration = self.max_duration
         # Algorithm specific fields
-        new_exp.neighbours = self.neighbours
-        new_exp.subregion_selection = self.subregion_selection
-        new_exp.lipschitz_estimation = self.lipschitz_estimation
-        new_exp.subregion_division = self.subregion_division
-        new_exp.stopping_criteria = self.stopping_criteria
-        new_exp.stopping_accuracy = self.stopping_accuracy
-        new_exp.subregion = self.subregion
-        new_exp.inner_problem_accuracy = self.inner_problem_accuracy
-        new_exp.inner_problem_iters = self.inner_problem_iters
-        new_exp.inner_problem_division = self.inner_problem_division
+        new_exp.details = self.details
         new_exp.invalid = self.invalid
         new_exp.parent = self
         new_exp.save()
