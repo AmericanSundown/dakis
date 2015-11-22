@@ -36,32 +36,6 @@ class Experiment(models.Model):
     details = JSONField(_('Algorithm details'), null=True, default='',
         help_text=_('Algorithm details in JSON format'))
 
-    neighbours = models.CharField(_('Neighbours'), max_length=255, null=True,
-        help_text=_('Strategy how neighbours are determined'))
-    subregion_selection = models.CharField(_('Subregion selection strategy'), max_length=255, null=True,
-        help_text=_('Strategy how subregion is selected for division'))
-
-    lipschitz_estimation = models.CharField(_('Lipschitz estimation'), max_length=255, null=True,
-        help_text=_('Subregion Lipschitz constant estimation strategy'))
-
-    subregion_division = models.CharField(_('Subregion division'), max_length=255, null=True,
-        help_text=_('Subregion division strategy'))
-
-    stopping_criteria = models.CharField(_('Stopping criteria'), max_length=255, null=True,
-        help_text=_('Stopping criteria strategy'))
-    stopping_accuracy = models.CharField(_('Stopping accuracy'), max_length=255, null=True,
-        help_text=_('Stopping accuracy'))
-
-    subregion = models.CharField(_('Subregion'), max_length=255, null=True,
-        help_text=_('Subregion type: simplex or rectangle'))
-
-    inner_problem_accuracy = models.CharField(_('Inner accuracy'), max_length=255, null=True,
-        help_text=_('Inner problem solution accuracy'))
-    inner_problem_iters = models.IntegerField(_('Inner iters'), null=True,
-        help_text=_('Inner problem maximum iterations to get solution'))
-    inner_problem_division = models.CharField(_('Division strategy in inner problem'), max_length=255, null=True,
-        help_text=_('Inner problem subregion division strategy'))
-
     invalid = models.BooleanField(_('Not valid'), default=False,
         help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
     mistakes = models.TextField(_('Mistakes'), null=True,
