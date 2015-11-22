@@ -9,9 +9,6 @@
       <div class="col-md-9">
         {% if exp.invalid %}<h2 class="pull-right"><span class="label label-danger">{% trans 'Not valid' %}</span></h2>{% endif %}
         <h1>{{ exp }}</h1>
-        {% if exp.description %}
-          <p>{{ exp.description }}</p>
-        {% endif %}
       </div>
       <div class="col-md-3" style='padding-top: 25px;'>
         {% if user.is_authenticated %}
@@ -96,8 +93,10 @@
           </table>
       </div>
       <div class="col-md-6">
-        <div class='text-center'><h3>{% trans 'Algorithm details' %}</h3></div>
-        <p><small><b>{% trans 'Algorithm' %}</b></small>: {{ exp.algorithm }}</p>
+        <div class='text-center'><h4>{{ exp.algorithm }}</h4></div>
+        {% if exp.description %}
+          <p><small><b>{% trans 'Description' %}</b></small>: {{ exp.description }}</p>
+        {% endif %}
         {% for name, value in exp.details %}
         <p><small><b>{{ name }}</b></small>: {{ value }}  &nbsp;<b><a class="remove-param-button" href="{% url 'remove-exp-property' exp.pk forloop.counter0 %}">x</a></b></p>
         {% endfor %}
