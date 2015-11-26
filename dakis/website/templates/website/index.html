@@ -6,7 +6,12 @@
 {% block content %}
 <div class="container-fluid">
   <div class="row" style="padding-top: 30px;">
-    <div class="col-md-5">
+    <div class="col-md-12">
+      <div class="text-center" style="float: right;">
+        <h2>{% trans "Compare your algorithms efficiently" %}</h2>
+        <p style="font-size: 16px;">Specify source code repository of your algorithm, choose input set and <br/>
+           press <b>start</b> to get result metrics using supercomputer.</p>
+      </div>
       <h2>{% trans "Algorithms" %}</h2>
       {% for experiment in experiments %}
         <p>
@@ -20,14 +25,7 @@
           {% endif %}
         </p>
       {% endfor %}
-    </div>
 
-    <div class="col-md-6">
-      <div class="text-center">
-        <h2>{% trans "Compare your algorithms efficiently" %}</h2>
-        <p style="font-size: 16px;">Specify source code repository of your algorithm, choose input set and <br/>
-           press <b>start</b> to get result metrics using supercomputer.</p>
-      </div>
     </div>
 
   </div>
