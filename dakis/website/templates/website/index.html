@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load trans blocktrans from i18n %}
 {% load static from staticfiles %}
+{% load not_major_exp_children from websitetags %}
 
 
 {% block content %}
@@ -20,7 +21,7 @@
             <a class="hide_children"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></a>
             <a class="show_children"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
             <div class="children">
-            {% include 'website/exp_children.html' with experiments=experiment.children.all %}
+            {% include 'website/exp_children.html' with experiments=experiment|not_major_exp_children %}
             </div>
           {% endif %}
         </p>

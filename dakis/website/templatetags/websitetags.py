@@ -68,3 +68,8 @@ def formrenderer_filter(context, form):
 @register.filter
 def idx(d, key):
     return d[key]
+
+
+@register.filter
+def not_major_exp_children(exp):
+    return exp.children.filter(is_major=False)
