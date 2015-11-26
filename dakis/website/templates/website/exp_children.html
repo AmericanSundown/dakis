@@ -5,6 +5,7 @@
 <div style='padding-left: 10px;'>
 {% for experiment in experiments %}
   <p>
+    <input class='exp' exp_pk='{{ experiment.id }}' type='checkbox'/>
     <a href="{% url 'exp-summary' experiment.id %}">{{ experiment }}</a>
     {% if experiment.threads %}<img src="{% static 'img/in-progress.gif' %}">{% endif %}
     {% include 'website/exp_children.html' with experiments=experiment|not_major_exp_children %}
