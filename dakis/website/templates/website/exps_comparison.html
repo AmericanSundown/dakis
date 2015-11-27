@@ -50,7 +50,7 @@
                   {% if i == 0 %}
                   <td rowspan="{{ summary.cls|length }}" class="table-cls-cell text-center"><a href="{% url 'task-list' %}?experiment={{ summary.exp_pk|idx:i }}&func_cls={{ summary.cls|idx:i }}">{{ summary.cls|idx:i }}</td>
                   {% endif %}
-                  <td class="text-center">{{ exps|idx:i|truncatechars:20 }}</td>
+                  <td class="text-center" title="{{ exps|idx:i }}">{{ exps|idx:i|truncatechars:20 }}</td>
                   <td>{{ summary.tasks_count|idx:i }}
                     {% if summary.tasks_suspended|idx:i %}
                       <span style='color: red; font-size: small;'>{{ summary.tasks_suspended|idx:i }}</small>
