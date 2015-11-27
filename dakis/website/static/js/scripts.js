@@ -32,7 +32,7 @@ $(document).ready(function() {
     for (var i=0; i < row_selector.size(); i++) {
         var cls = row_selector[i].classList[0];
         for (j=0; j < cols.length; j++) {
-            var val = parseFloat($(row_selector[i]).find(cols[j]).html());
+            var val = parseFloat($(row_selector[i]).find(cols[j]).html().replace('&gt;', ''));
             var key = cls + cols[j];
             if (key in cell_values) {
                 cell_values[key].push(val);
@@ -46,7 +46,7 @@ $(document).ready(function() {
         var cls = row_selector[i].classList[0];
         for (j=0; j < cols.length; j++) {
             var cell = $(row_selector[i]).find(cols[j]);
-            var val = parseFloat(cell.html());
+            var val = parseFloat(cell.html().replace('&gt;', ''));
             var key = cls + cols[j];
             if (val === Math.min.apply(Math, cell_values[key])) {
                 $(cell).css("font-weight","bold");
