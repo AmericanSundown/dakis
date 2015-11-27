@@ -46,7 +46,7 @@
             {% for summary in summaries %}
               {% for algorithm in summary.algorithm %}
                 {% with forloop.counter0 as i %}
-                <tr style="text-align: right; {% if forloop.last %}border-bottom: 2px solid #ddd;{% endif %}">
+                <tr class="cls{{ forloop.parentloop.counter }}" style="text-align: right; {% if forloop.last %}border-bottom: 2px solid #ddd;{% endif %}">
                   {% if i == 0 %}
                   <td rowspan="{{ summary.cls|length }}" class="table-cls-cell text-center"><a href="{% url 'task-list' %}?experiment={{ summary.exp_pk|idx:i }}&func_cls={{ summary.cls|idx:i }}">{{ summary.cls|idx:i }}</td>
                   {% endif %}
@@ -56,9 +56,9 @@
                       <span style='color: red; font-size: small;'>{{ summary.tasks_suspended|idx:i }}</small>
                     {% endif %}
                   </td>
-                  <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.calls_avg|idx:i|floatformat:"-2" }}</td>
-                  <td>{% if summary.tasks_suspended|idx:i > summary.tasks_count|idx:i %}&gt;{% endif %}{{ summary.calls_50|idx:i|floatformat }}</td>
-                  <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.calls_100|idx:i }}</td>
+                  <td class="cmp-avg">{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.calls_avg|idx:i|floatformat:"-2" }}</td>
+                  <td class="cmp-50">{% if summary.tasks_suspended|idx:i > summary.tasks_count|idx:i %}&gt;{% endif %}{{ summary.calls_50|idx:i|floatformat }}</td>
+                  <td class="cmp-100">{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.calls_100|idx:i }}</td>
                   <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.duration_avg|idx:i|timedelta }}</td>
                   <td>{% if summary.tasks_suspended|idx:i %}&gt;{% endif %}{{ summary.subregions_avg|idx:i|floatformat:"-2" }}</td>
                 </tr>
