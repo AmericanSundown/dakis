@@ -9,9 +9,9 @@
   <div class="row" style="padding-top: 30px;">
     <div class="col-md-12">
       <div class="text-center" style="float: right;">
-        <h2>{% trans "Compare your algorithms efficiently" %}</h2>
-        <p style="font-size: 16px;">Specify source code repository of your algorithm, choose input set and <br/>
-           press <b>start</b> to get result metrics using supercomputer.</p>
+        <h3>{% trans "Compare your algorithms efficiently" %}</h3>
+        <p style="font-size: 16px;">Specify source code repository of your algorithm,<br/> choose problem (input set) and
+        press <b>start</b><br/> to get result metrics using supercomputer.</p>
       </div>
       <h2>{% trans "Algorithms" %} <a id='comparison-url' href="{% url 'compare-exps' %}?exps="><button class='btn btn-default btn-xs'>Compare</button></a></h2>
       {% for experiment in experiments %}
