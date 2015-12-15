@@ -65,7 +65,7 @@ class Experiment(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     # Fields migrated to Algorithm model
-    algorithm = models.CharField(_('Algorithm'), max_length=255, null=True,
+    algorithm_title = models.CharField(_('Algorithm'), max_length=255, null=True,
         help_text=_('Unique verbose name of this algorithm'))
 
     repository = models.CharField(_('Source code repository'), max_length=255, null=True,
