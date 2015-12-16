@@ -107,7 +107,10 @@ class Experiment(models.Model):
     problem = models.ForeignKey('Problem', null=True, help_text=_('Problem which is solved in this experiment'))
 
     def __str__(self):
-        return self.algorithm.title
+        if self.algorithm:
+            return self.algorithm.title
+        else:
+            return 'New experiment %d' % self.pk
 
     def get_absolute_url(self):
         return reverse('exp-summary', args=[self.pk])
