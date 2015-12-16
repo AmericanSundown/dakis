@@ -35,6 +35,41 @@ class Algorithm(models.Model):
     def __str__(self):
         return str(self.title)
 
+    def dublicate(self):
+        return Algorithm.objects.create(
+            title=self.algorithm.title + ' (copy)',
+            description=self.algorithm.description,
+            repository=self.algorithm.repository,
+            branch=self.algorithm.branch,
+            executable=self.algorithm.executable,
+            details=self.algorithm.details,
+            parent=self.algorithm.parent,
+        )
+
+
+class Problem(models.Model):
+    created = CreationDateTimeField()
+    modified = ModificationDateTimeField()
+
+    title = models.CharField(_('Problem title'), max_length=255, null=True, help_text=_('Unique verbose name of this problem'))
+    description = models.TextField(_('Description'), null=True, help_text=_('Problem description'))
+
+    input_params = JSONField(_('Input parameters'), null=True, default='',
+            help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
+    output_params = JSONField(_('Output parameters'), null=True, default='',)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+
+    def __str__(self):
+        return str(self.title)
+
+    def dublicate(self):
+        return Problem.objects.create(
+            title=self.title,
+            description=self.description,
+            input_params=self.input_params,
+            output_params=self.output_params,
+            parent=self.parent,
+        )
 
 class Experiment(models.Model):
     STATUS_CHOICES = (
@@ -82,32 +117,10 @@ class Experiment(models.Model):
         new_exp.description = self.description
         new_exp.invalid = self.invalid
         new_exp.parent = self
-        new_exp.algorithm = Algorithm.objects.create(
-            title=self.algorithm.title + ' (copy)',
-            repository=self.algorithm.repository,
-            branch=self.algorithm.branch,
-            executable=self.algorithm.executable,
-            details=self.algorithm.details,
-        )
+        new_exp.algorithm = self.algorithm.dublicate()
+        new_exp.problem = self.problem.dublicate()
         new_exp.save()
         return new_exp
-
-
-class Problem(models.Model):
-    created = CreationDateTimeField()
-    modified = ModificationDateTimeField()
-
-    title = models.CharField(_('Problem title'), max_length=255, null=True, help_text=_('Unique verbose name of this problem'))
-    description = models.TextField(_('Description'), null=True, help_text=_('This problem description'))
-
-    input_params = JSONField(_('Input parameters'), null=True, default='',
-            help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
-    output_params = JSONField(_('Output parameters'), null=True, default='',)
-    description = models.TextField(_('Description'), null=True, help_text=_('Problem description'))
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
-
-    def __str__(self):
-        return str(self.title)
 
 
 class Task(models.Model):
