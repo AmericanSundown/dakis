@@ -11,7 +11,7 @@ class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Experiment
-        exclude = ('author', 'details')
+        exclude = ('author',)
 
     def create(self, data):
         user = self.context['request'].user
