@@ -32,6 +32,9 @@ class Algorithm(models.Model):
         help_text=_('Is this algorithm unique? And should it be used for comparison as its algorithm class representative?'))
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
+    def __str__(self):
+        return str(self.title)
+
 
 class Experiment(models.Model):
     STATUS_CHOICES = (
