@@ -67,7 +67,8 @@ class Experiment(models.Model):
 
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
-    algorithm = models.ForeignKey('Algorithm', null=True, help_text=_('Algorithm which is used for experiment'))
+    algorithm = models.ForeignKey('Algorithm', null=True, help_text=_('Algorithm which is used for this experiment'))
+    problem = models.ForeignKey('Problem', null=True, help_text=_('Problem which is solved in this experiment'))
 
     def __str__(self):
         return self.algorithm.title
@@ -92,27 +93,21 @@ class Experiment(models.Model):
         return new_exp
 
 
-# class ProblemType(models.Model):
-## Input (max_duration) and output parameters.
-##   Each parameter should have name, type, default value (which can be range).
-##   Parameter nesting only has meaning when using value ranges, which means for each in range use this range.
-#     created = CreationDateTimeField()
-#     modified = ModificationDateTimeField()
-#     # What Task parameters should be and how they should change.
-#     # Parameter name, type, range. <- some kind of language is needed (python ranges).
-#     # Some associated code should also be here.
-#     input_params = JSONField(_('Input parameters'), null=True, default='',
-#             help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
-#     output_params = JSONField(_('Output parameters'), null=True, default='',)
-#     description = models.TextField(_('Description'), null=True, help_text=_('Problem description'))
-#
-#
-# class Problem(models.Model):
-#     created = CreationDateTimeField()
-#     modified = ModificationDateTimeField()
-#     ForeignKey(ProblemType)
-#     params = JSONField(_('Parameters'), null=True, default='',
-#             help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
+class Problem(models.Model):
+    created = CreationDateTimeField()
+    modified = ModificationDateTimeField()
+
+    title = models.CharField(_('Problem title'), max_length=255, null=True, help_text=_('Unique verbose name of this problem'))
+    description = models.TextField(_('Description'), null=True, help_text=_('This problem description'))
+
+    input_params = JSONField(_('Input parameters'), null=True, default='',
+            help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
+    output_params = JSONField(_('Output parameters'), null=True, default='',)
+    description = models.TextField(_('Description'), null=True, help_text=_('Problem description'))
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+
+    def __str__(self):
+        return str(self.title)
 
 
 class Task(models.Model):
