@@ -3,7 +3,7 @@ from rest_framework import filters
 
 from django.contrib.auth.models import User
 
-from dakis.core.models import Experiment, Task
+from dakis.core.models import Experiment, Algorithm, Problem, Task
 
 
 class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,6 +18,22 @@ class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
         if user.is_authenticated():
             data['author'] = user
         return super(ExperimentSerializer, self).create(data)
+
+
+class AlgorithmSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(label='ID', read_only=True)
+
+    class Meta:
+        model = Algorithm
+        exclude = ('author',)
+
+
+class ProblemSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(label='ID', read_only=True)
+
+    class Meta:
+        model = Problem
+        exclude = ('author',)
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,6 +52,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class ExperimentViewSet(viewsets.ModelViewSet):
     queryset = Experiment.objects.all()
     serializer_class = ExperimentSerializer
+
+
+class AlgorithmViewSet(viewsets.ModelViewSet):
+    queryset = Algorithm.objects.all()
+    serializer_class = AlgorithmSerializer
+
+
+class ProblemViewSet(viewsets.ModelViewSet):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemSerializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
