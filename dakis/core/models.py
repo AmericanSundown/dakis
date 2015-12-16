@@ -37,13 +37,13 @@ class Algorithm(models.Model):
 
     def dublicate(self):
         return Algorithm.objects.create(
-            title=self.algorithm.title + ' (copy)',
-            description=self.algorithm.description,
-            repository=self.algorithm.repository,
-            branch=self.algorithm.branch,
-            executable=self.algorithm.executable,
-            details=self.algorithm.details,
-            parent=self.algorithm.parent,
+            title=self.title + ' (copy)',
+            description=self.description,
+            repository=self.repository,
+            branch=self.branch,
+            executable=self.executable,
+            details=self.details,
+            parent=self.parent,
         )
 
 
