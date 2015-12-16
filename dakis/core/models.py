@@ -118,8 +118,10 @@ class Experiment(models.Model):
         new_exp.description = self.description
         new_exp.invalid = self.invalid
         new_exp.parent = self
-        new_exp.algorithm = self.algorithm.dublicate()
-        new_exp.problem = self.problem.dublicate()
+        if self.algorithm:
+            new_exp.algorithm = self.algorithm.dublicate()
+        if self.problem:
+            new_exp.problem = self.problem.dublicate()
         new_exp.save()
         return new_exp
 
