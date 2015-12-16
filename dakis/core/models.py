@@ -25,8 +25,6 @@ class Algorithm(models.Model):
     executable = models.CharField(_('Executable'), max_length=255, null=True,
         help_text=_('Executable file in source code repository, e.g. main.out'))
 
-    # What should be stored in this field? Ok the description parameters. And they surely should be copied from
-    # experiment.
     details = JSONField(_('Algorithm details'), null=True, default='',
         help_text=_('Algorithm details in JSON format'))
 
@@ -69,70 +67,35 @@ class Experiment(models.Model):
 
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
-    # Fields migrated to Algorithm model
     algorithm = models.ForeignKey('Algorithm', null=True, help_text=_('Algorithm which is used for experiment'))
 
-    algorithm_title = models.CharField(_('Algorithm'), max_length=255, null=True,
-        help_text=_('Unique verbose name of this algorithm'))
-
-    repository = models.CharField(_('Source code repository'), max_length=255, null=True,
-        help_text=_('Git of Mercurial repository, where source code is stored, e.g. http://github.com/niekas/dakis'))
-    branch = models.CharField(_('Branch'), max_length=255, null=True,
-        help_text=_('Branch of source code repository, need only if its not master branch'))
-    executable = models.CharField(_('Executable'), max_length=255, null=True,
-        help_text=_('Executable file in source code repository, e.g. main.out'))
-
-    details = JSONField(_('Algorithm details'), null=True, default='',
-        help_text=_('Algorithm details in JSON format'))
-
-    # Deprecated fields
-    # max_duration = models.FloatField(_('Max one execution duration in seconds'), null=True)
-
     def __str__(self):
-        return self.algorithm_title
+        return self.algorithm.title
 
     def get_absolute_url(self):
         return reverse('exp-summary', args=[self.pk])
 
     def dublicate(self):
         new_exp = Experiment.objects.create()
-        # General purpose fields
         new_exp.author = self.author
         new_exp.description = self.description
-        new_exp.algorithm = self.algorithm + ' (copy)'
-        new_exp.repository = self.repository
-        new_exp.branch = self.branch
-        new_exp.executable = self.executable
-        new_exp.max_duration = self.max_duration
-        # Algorithm specific fields
-        new_exp.details = self.details
         new_exp.invalid = self.invalid
         new_exp.parent = self
+        new_exp.algorithm = Algorithm.objects.create(
+            title=self.algorithm.title + ' (copy)',
+            repository=self.algorithm.repository,
+            branch=self.algorithm.branch,
+            executable=self.algorithm.executable,
+            details=self.algorithm.details,
+        )
         new_exp.save()
         return new_exp
 
-    def move_data_to_details_field(self):
-        if type(self.details) is not list:
-            self.details = []
-        self.details.append(('Neighbours', self.neighbours))
-        self.details.append(('Subregion selection', self.subregion_selection))
-        self.details.append(('Lipschitz estimation', self.lipschitz_estimation))
-        self.details.append(('Subregion', self.subregion))
-        self.details.append(('Subregion division', self.subregion_division))
-        self.details.append(('Stopping criteria', self.stopping_criteria))
-        self.details.append(('Stopping accuracy', self.stopping_accuracy))
-        self.details.append(('Inner problem accuracy', self.inner_problem_accuracy))
-        self.details.append(('Inner problem iters', self.inner_problem_iters))
-        self.details.append(('Inner problem division', self.inner_problem_division))
-        self.save()
-
-
-
-# Input and output parameters.
-#   Each parameter should have name, type, default value (which can be range).
-#   Parameter nesting only has meaning when using value ranges, which means for each in range use this range.
 
 # class ProblemType(models.Model):
+## Input (max_duration) and output parameters.
+##   Each parameter should have name, type, default value (which can be range).
+##   Parameter nesting only has meaning when using value ranges, which means for each in range use this range.
 #     created = CreationDateTimeField()
 #     modified = ModificationDateTimeField()
 #     # What Task parameters should be and how they should change.
