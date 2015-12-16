@@ -50,6 +50,7 @@ class Algorithm(models.Model):
 class Problem(models.Model):
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
+    author = models.ForeignKey(User, null=True)
 
     title = models.CharField(_('Problem title'), max_length=255, null=True, help_text=_('Unique verbose name of this problem'))
     description = models.TextField(_('Description'), null=True, help_text=_('Problem description'))
