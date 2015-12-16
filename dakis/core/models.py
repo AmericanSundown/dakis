@@ -25,6 +25,8 @@ class Algorithm(models.Model):
     executable = models.CharField(_('Executable'), max_length=255, null=True,
         help_text=_('Executable file in source code repository, e.g. main.out'))
 
+    # What should be stored in this field? Ok the description parameters. And they surely should be copied from
+    # experiment.
     details = JSONField(_('Algorithm details'), null=True, default='',
         help_text=_('Algorithm details in JSON format'))
 
@@ -87,7 +89,7 @@ class Experiment(models.Model):
     # max_duration = models.FloatField(_('Max one execution duration in seconds'), null=True)
 
     def __str__(self):
-        return self.algorithm
+        return self.algorithm_title
 
     def get_absolute_url(self):
         return reverse('exp-summary', args=[self.pk])
