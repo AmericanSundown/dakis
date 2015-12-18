@@ -1,6 +1,7 @@
 from autoslug import AutoSlugField
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
 from json_field import JSONField
+from concurrency.fields import IntegerVersionField
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -88,6 +89,9 @@ class Experiment(models.Model):
     description = models.TextField(_('Description'), null=True,
         help_text=_('This experiment description'))
 
+    algorithm = models.ForeignKey('Algorithm', null=True, help_text=_('Algorithm which is used for this experiment'))
+    problem = models.ForeignKey('Problem', null=True, help_text=_('Problem which is solved in this experiment'))
+
     status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
 
     threads = models.IntegerField(_('Threads'), null=True,
@@ -102,9 +106,6 @@ class Experiment(models.Model):
         help_text=_('Is this algorithm unique? And should it be used for comparison as its algorithm class representative?'))
 
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
-
-    algorithm = models.ForeignKey('Algorithm', null=True, help_text=_('Algorithm which is used for this experiment'))
-    problem = models.ForeignKey('Problem', null=True, help_text=_('Problem which is solved in this experiment'))
 
     def __str__(self):
         if self.algorithm:
@@ -140,18 +141,15 @@ class Task(models.Model):
     created = CreationDateTimeField()
     modified = ModificationDateTimeField()
 
+    version = IntegerVersionField()
+
     duration = models.FloatField(_('Duration'), null=True, help_text=_('Task execution duration in seconds'))
     experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,
                     help_text=_('ID of experiment to which this task is assigned to'))
     status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
-    details = JSONField(_('Task details'), null=True, default='',
-        help_text=_('Task execution details in JSON format'))
 
-    # Algorithm specific
-    func_name = models.CharField(_('Function name'), null=True, max_length=255, help_text=_('Function name'))
-    func_cls = models.IntegerField(_('GKLS class'), null=True, help_text=_('GKLS function class'))
-    func_id = models.IntegerField(_('GKLS id'), null=True, help_text=_('GKLS function id'))
-    calls = models.IntegerField(_('Calls'), null=True, help_text=_('Calls'))
-    subregions = models.IntegerField(_('Subregions'), null=True, help_text=_('Subregions in final partition'))
-    f_min = models.FloatField(_('F min'), null=True, help_text=_('Value of minimum, which managed to determine'))
-    x_min = models.CharField(_('X min'), max_length=255, null=True, help_text=_('Determined minimum coordinates'))
+    input_values = JSONField(_('Input parameters'), null=True, default='', help_text=_('Parameters for each experiment task.'))
+    output_values = JSONField(_('Output parameters'), null=True, default='',)
+
+    stdout = models.TextField(_('stdout'), null=True, help_text=_('Standard output stream'))
+    stderr = models.TextField(_('stderr'), null=True, help_text=_('Standard error stream'))

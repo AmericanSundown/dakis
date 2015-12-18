@@ -33,6 +33,7 @@ setup(
         'pathlib',
         'html_linter',
         'template-remover',
+        'django-concurrency',  # Installed manually, because installation problems araised
     ],
     classifiers=[
         'Development Status :: 1 - Planning',
