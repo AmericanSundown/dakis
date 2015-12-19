@@ -1,3 +1,4 @@
+import json
 from rest_framework import serializers, viewsets
 from rest_framework import filters
 
@@ -27,6 +28,11 @@ class AlgorithmSerializer(serializers.HyperlinkedModelSerializer):
         model = Algorithm
         exclude = ('author',)
 
+    def save(self):
+        if self.validated_data.get('details'):
+            self.validated_data['details'] = json.loads(self.validated_data['details'].replace("'", '"'))
+        super(AlgorithmSerializer, self).save()
+
 
 class ProblemSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.IntegerField(label='ID', read_only=True)
@@ -35,12 +41,26 @@ class ProblemSerializer(serializers.HyperlinkedModelSerializer):
         model = Problem
         exclude = ('author',)
 
+    def save(self):
+        if self.validated_data.get('input_params'):
+            self.validated_data['input_params'] = json.loads(self.validated_data['input_params'].replace("'", '"'))
+        if self.validated_data.get('output_params'):
+            self.validated_data['output_params'] = json.loads(self.validated_data['output_params'].replace("'", '"'))
+        super(ProblemSerializer, self).save()
+
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.IntegerField(label='ID', read_only=True)
 
     class Meta:
         model = Task
+
+    def save(self):
+        if self.validated_data.get('input_values'):
+            self.validated_data['input_values'] = json.loads(self.validated_data['input_values'].replace("'", '"'))
+        if self.validated_data.get('output_values'):
+            self.validated_data['output_values'] = json.loads(self.validated_data['output_values'].replace("'", '"'))
+        super(TaskSerializer, self).save()
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -67,7 +87,7 @@ class ProblemViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    filter_fields = ('experiment', 'func_cls', 'func_id', 'status')
+    filter_fields = ('experiment', 'status')
     filter_backends = (filters.DjangoFilterBackend,)
 
 
