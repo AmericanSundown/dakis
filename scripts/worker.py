@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import subprocess
-import logging
+# import logging
 import sys
 import os
 from os.path import join
@@ -28,10 +28,10 @@ def prepare_environment():
 
 
 def run_next_task(exp_id, executable, use_job=False):
-    url = 'http://dakis.gimbutas.lt/api/exp/%d/next-task/' % exp_id
+    url = 'http://dakis.lt/api/exp/%d/next-task/' % exp_id
     resp = requests.get(url)
     task = resp.json()
-    logging.info('Getting next task: exp_id=%d, status_code=%d, resp=%s' % (exp_id, resp.status_code, resp.json()))
+    # logging.info('Getting next task: exp_id=%d, status_code=%d, resp=%s' % (exp_id, resp.status_code, resp.json()))
     if resp.status_code == 200 and resp.json():
         cmd = [
             '%s' % executable,       # Should pass path as it will be called  .strip('./')
@@ -47,31 +47,32 @@ def run_next_task(exp_id, executable, use_job=False):
                 job_file.write('#!/bin/bash\n#$ -j y\n#$ -l h_rt=12:00:00\n#$ -S /bin/bash\n#$ -cwd\nmpirun -np 1 ')  # Header
                 job_file.write(' '.join(cmd) + '\n')
                 job_file.close()
-                logging.info('Created job file: %s' % job_filename)
+                # logging.info('Created job file: %s' % job_filename)
                 add_to_queue_cmd = 'qsub -pe orte 1 -o {0}.o -e {0}.e {0}'.format(job_filename)
                 # Specify stdout and stderr paths for qsub and remove them after execution
                 print('Calling command:', add_to_queue_cmd)
                 p1 = subprocess.Popen(add_to_queue_cmd, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # , close_fds=True)
                 print('Add to queue command response:', p1.communicate())  # Error: cannot submit qsub job using ssh
-                logging.info('Called command: %s' % add_to_queue_cmd)
+                # logging.info('Called command: %s' % add_to_queue_cmd)
             else:
-                logging.info('Calling: cmd=%s' % ' '.join(cmd))
+                # logging.info('Calling: cmd=%s' % ' '.join(cmd))
                 subprocess.Popen(' '.join(cmd), shell=True, stdin=None, stdout=None, stderr=None)
         except Exception as e:
-            logging.error('Got error while calling:  %s' % str(e))
+            pass
+            # logging.error('Got error while calling:  %s' % str(e))
 
 
 def send_task_results(args):
-    url = 'http://dakis.gimbutas.lt/api/tasks/%d/' % args.task_id
+    url = 'http://dakis.lt/api/tasks/%d/' % args.task_id
     data = {
         'calls': args.calls,
         'duration': args.duration,
         'subregions': args.subregions,
         'status': args.status,
     }
-    logging.info('Sending: url=%s, data=%s' % (url, data))
+    # logging.info('Sending: url=%s, data=%s' % (url, data))
     resp = requests.put(url, data)
-    logging.info('Response from sending: status_code=%s, data=%s' % (resp.status_code, resp.json()))
+    # logging.info('Response from sending: status_code=%s, data=%s' % (resp.status_code, resp.json()))
     return resp.json()
 
 
@@ -83,7 +84,7 @@ def prepare_executable(args):
         branch = args.branch
         exe_file = args.executable
     else:
-        url = 'http://dakis.gimbutas.lt/api/experiments/%d/' % exp_id
+        url = 'http://dakis.lt/api/experiments/%d/' % exp_id
         resp = requests.get(url)
         exp = resp.json()
         repository = exp['repository']
@@ -105,7 +106,7 @@ def prepare_executable(args):
 
 
 def request_to_run_next_task(exp_id):
-    url = 'http://dakis.gimbutas.lt/api/exp/%d/run/' % exp_id
+    url = 'http://dakis.lt/api/exp/%d/run/' % exp_id
     resp = requests.get(url)
     return
 
@@ -122,9 +123,9 @@ def get_argparser():
     parser.add_argument('-j', '--job', help='Create job and execute task through supercomputer task queue', nargs='?', const=True)
 
     parser.add_argument('-task', '--task_id', type=int, help='Task ID', nargs=None, default=None)
-    parser.add_argument('-calls', '--calls', type=int, help='Number of calls', nargs=None, default=None)
-    parser.add_argument('-duration', '--duration', type=float, help='Execution duration', nargs=None, default=None)
-    parser.add_argument('-subs', '--subregions', type=int, help='Number of subregions', nargs=None, default=None)
+    # parser.add_argument('-calls', '--calls', type=int, help='Number of calls', nargs=None, default=None)
+    # parser.add_argument('-duration', '--duration', type=float, help='Execution duration', nargs=None, default=None)
+    # parser.add_argument('-subs', '--subregions', type=int, help='Number of subregions', nargs=None, default=None)
     parser.add_argument('-st', '--status', type=str, help='Status of the task. D - done, S - suspended.', nargs=None, default=None)
 
     # Prepare environment arguments
@@ -135,16 +136,16 @@ def get_argparser():
 def main():
     global requests
     import requests
-    args = get_argparser().parse_args()
+    args, unknown = get_argparser().parse_known_args()
 
-    logging.basicConfig(
-        level=logging.INFO,
-        filename=os.path.expanduser(join(MAIN_DIR, 'worker.log')),
-        format='%(asctime)s - %(levelname)s - %(message)s',
-    )
-    logging.info('Invoked with argv: %s' % sys.argv)
-    logging.info('Invoked with: exp_id=%s executable=%s task_id=%s calls=%s -duration=%s --subregions=%s --status=%s --job=%s' % (
-                 args.exp_id, args.executable, args.task_id, args.calls, args.duration, args.subregions, args.status, args.job))
+    # logging.basicConfig(
+    #     level=logging.INFO,
+    #     filename=os.path.expanduser(join(MAIN_DIR, 'worker.log')),
+    #     format='%(asctime)s - %(levelname)s - %(message)s',
+    # )
+    # logging.info('Invoked with argv: %s' % sys.argv)
+    # logging.info('Invoked with: exp_id=%s executable=%s task_id=%s calls=%s -duration=%s --subregions=%s --status=%s --job=%s' % (
+    #              args.exp_id, args.executable, args.task_id, args.calls, args.duration, args.subregions, args.status, args.job))
 
     if args.exp_id:
         exe = prepare_executable(args)
@@ -167,5 +168,4 @@ if __name__ == '__main__':
     if (not os.path.exists(MAIN_DIR) or not os.path.exists(JOBS_DIR)
         or 'env' in sys.argv or '-env' in sys.argv or '--prepare_environment' in sys.argv):
         prepare_environment()
-    else:
-        main()
+    main()
