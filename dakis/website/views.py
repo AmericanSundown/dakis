@@ -51,7 +51,8 @@ def toggle_exp_status(request, exp_id):
         exp.threads = 0
         exp.save()
     else:
-        exp.create_tasks()
+        if not exp.tasks.all():
+            exp.create_tasks()
         exp.status = 'R'
         exp.threads += 1
         exp.save()
