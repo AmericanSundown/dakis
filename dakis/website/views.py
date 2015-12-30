@@ -50,6 +50,12 @@ def toggle_exp_status(request, exp_id):
         exp.status = 'D'
         exp.threads = 0
         exp.save()
+    else:
+        exp.create_tasks()
+        exp.status = 'R'
+        exp.threads += 1
+        exp.save()
+        run_worker(exp, request.user)
     return redirect(exp)
 
 

@@ -73,6 +73,7 @@ class Problem(models.Model):
             parent=self.parent,
         )
 
+
 class Experiment(models.Model):
     STATUS_CHOICES = (
         ('C', 'Created'),
@@ -128,6 +129,63 @@ class Experiment(models.Model):
             new_exp.problem = self.problem.dublicate()
         new_exp.save()
         return new_exp
+
+    def range_to_list(self, rng):
+        '''Converts string to element list.'''
+        lst = []
+        for e in rng.split(','):
+            if '..' in e:
+                start, end = e.split('..')
+                for i in range(int(start), int(end) + 1):
+                    lst.append(i)
+            else:
+                try:
+                    lst.append(int(e))
+                except:
+                    lst.append(e)
+        return lst
+
+    def pair_operator(self, tasks_input_params, name, value, operate_on=None):
+        '''Adds separate value for each task'''
+        ## iterate values same as for parameter (previously defined parameter).
+        new_tasks_input_params = []
+        value_list = range_to_list(value)
+        for i, p in enumerate(tasks_input_params):
+            new_p = p[:]
+            new_p.append([name, value_list[i % len(value_list)]])
+            new_tasks_input_params.append(new_p)
+        return new_tasks_input_params
+
+    def multiply_operator(self, tasks_input_params, name, value, operate_on=None):
+        ## new tasks for each value of parameter (previously defined parameter).
+        new_tasks_input_params = []
+        for p in tasks_input_params:
+            for v in range_to_list(value):
+                new_p = p[:]
+                new_p.append([name, v])
+                new_tasks_input_params.append(new_p)
+        return new_tasks_input_params
+
+    operator_handlers = {
+        'multiply': multiply_operator,
+        'pair': pair_operator,
+    }
+
+    def create_tasks(self):
+        '''self.problem.input_params is structured: [{'name': .., 'value': .., 'operator': .., 'operate_on': ..}, ..]'''
+        tasks_input_params = [[]]
+
+        ## Create parameter lists
+        for param in self.problem.input_params:
+            name = param.get('name')
+            value = param.get('value')
+            op = param.get('operator', 'multiply')
+            operate_on = param.get('operate_on')
+            tasks_input_params = self.operator_handlers[op](tasks_input_params, name, value, operate_on)
+
+        ## Create tasks
+        for p in tasks_input_params:   # Warning: check No spaces in name and value to prevent injection attack
+            Task.objects.create(input_param=p, experiment=self)
 
 
 class Task(models.Model):
