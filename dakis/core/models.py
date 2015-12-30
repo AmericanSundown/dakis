@@ -149,7 +149,7 @@ class Experiment(models.Model):
         '''Adds separate value for each task'''
         ## iterate values same as for parameter (previously defined parameter).
         new_tasks_input_params = []
-        value_list = range_to_list(value)
+        value_list = self.range_to_list(value)
         for i, p in enumerate(tasks_input_params):
             new_p = p[:]
             new_p.append([name, value_list[i % len(value_list)]])
@@ -160,7 +160,7 @@ class Experiment(models.Model):
         ## new tasks for each value of parameter (previously defined parameter).
         new_tasks_input_params = []
         for p in tasks_input_params:
-            for v in range_to_list(value):
+            for v in self.range_to_list(value):
                 new_p = p[:]
                 new_p.append([name, v])
                 new_tasks_input_params.append(new_p)
@@ -181,11 +181,11 @@ class Experiment(models.Model):
             value = param.get('value')
             op = param.get('operator', 'multiply')
             operate_on = param.get('operate_on')
-            tasks_input_params = self.operator_handlers[op](tasks_input_params, name, value, operate_on)
+            tasks_input_params = self.operator_handlers[op](self, tasks_input_params, name, value, operate_on)
 
         ## Create tasks
         for p in tasks_input_params:   # Warning: check No spaces in name and value to prevent injection attack
-            Task.objects.create(input_param=p, experiment=self)
+            Task.objects.create(input_values=p, experiment=self)
 
 
 class Task(models.Model):
