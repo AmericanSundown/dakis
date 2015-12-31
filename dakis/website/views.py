@@ -87,7 +87,7 @@ def run_worker(exp, user):
         exp.algorithm.repository,
         exp.algorithm.branch,
     )
-    logger.debug('Running: ' + cmd)
+    logger.info('Running: ' + cmd)
 
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
     exp.save()   # Note: Why exp is saved here?
@@ -129,9 +129,11 @@ def get_next_task(request, exp_id):
         task.save()
         return HttpResponse(json.dumps({
             'experiment': 'http://' + domain + reverse('experiment-detail', args=[exp.pk]),
-            'func_cls': task.func_cls,
-            'func_id': task.func_id,
-            'id': task.pk,
+            'input_values': task.input_values,
+            'task_id': task.pk,
+            'repository': task.experiment.algorithm.repository,
+            'branch': task.experiment.algorithm.branch,
+            'executable': task.experiment.algorithm.executable,
         }), content_type="application/json")
     return HttpResponse(json.dumps({}), content_type="application/json")
 
