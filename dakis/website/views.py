@@ -83,14 +83,14 @@ def run_worker(exp, user):
         user.profile.host_password,
         user.profile.hostname,
         exp.pk,
-        exp.executable,
-        exp.repository,
-        exp.branch,
+        exp.algorithm.executable,
+        exp.algorithm.repository,
+        exp.algorithm.branch,
     )
     logger.debug('Running: ' + cmd)
 
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
-    exp.save()
+    exp.save()   # Note: Why exp is saved here?
     return
 
 
@@ -147,31 +147,31 @@ def create_gkls_tasks(request, exp_id):
 
 def exp_details(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
-    unique_classes = exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct()
+    # unique_classes = exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct()
 
     summaries = []
-    for cls in unique_classes:
-        tasks_done = exp.tasks.filter(func_cls=cls, status="D")
-        tasks_suspended = exp.tasks.filter(func_cls=cls, status="S")
-        tasks = tasks_done | tasks_suspended
-        if tasks.exists():
-            calls = tasks.order_by('calls').values_list('calls', flat=True)
-            subregions = tasks.values_list('subregions', flat=True)
-            durations = tasks.values_list('duration', flat=True)
-            summary = {
-                'title': cls,
-                'tasks_count': tasks_done.count(),
-                'tasks_suspended': tasks_suspended.count(),
-                'calls_avg': sum([c for c in calls if c])/float(len(calls)),
-                'calls_100': calls[len(calls)-1],
-                'duration_avg':sum([d for d in durations if d])/float(len(durations)),
-                'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
-            }
-            if len(calls) % 2 == 1:
-                summary['calls_50'] = calls[len(calls)//2]
-            else:
-                summary['calls_50'] = (calls[len(calls)//2-1] + calls[len(calls)//2])/2
-            summaries.append(summary)
+    # for cls in unique_classes:
+    #     tasks_done = exp.tasks.filter(func_cls=cls, status="D")
+    #     tasks_suspended = exp.tasks.filter(func_cls=cls, status="S")
+    #     tasks = tasks_done | tasks_suspended
+    #     if tasks.exists():
+    #         calls = tasks.order_by('calls').values_list('calls', flat=True)
+    #         subregions = tasks.values_list('subregions', flat=True)
+    #         durations = tasks.values_list('duration', flat=True)
+    #         summary = {
+    #             'title': cls,
+    #             'tasks_count': tasks_done.count(),
+    #             'tasks_suspended': tasks_suspended.count(),
+    #             'calls_avg': sum([c for c in calls if c])/float(len(calls)),
+    #             'calls_100': calls[len(calls)-1],
+    #             'duration_avg':sum([d for d in durations if d])/float(len(durations)),
+    #             'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
+    #         }
+    #         if len(calls) % 2 == 1:
+    #             summary['calls_50'] = calls[len(calls)//2]
+    #         else:
+    #             summary['calls_50'] = (calls[len(calls)//2-1] + calls[len(calls)//2])/2
+    #         summaries.append(summary)
 
     return render(request, 'website/exp_details.html', {
         'exp': exp,
