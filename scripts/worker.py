@@ -42,11 +42,11 @@ def get_job_filename(exp_id, resp_json):
     return job_filename
 
 
-def run_next_task(exp_id, use_job=False):
+def run_next_task(exp_id):
     '''Get task data, prepare executable, check if supercomputer, run_task.'''
-    ## Note:  get rid of ``use_job``.  Also check if this is supercomputer to get rid of use_job option.
     resp = requests.get('http://dakis.lt/api/exp/%d/next-task/' % exp_id)
     # logging.info('Getting next task: exp_id=%d, status_code=%d, resp=%s' % (exp_id, resp.status_code, resp.json()))
+    print('Trying to run next task')
     if resp.status_code == 200 and resp.json():
         resp_json = resp.json()
 
@@ -65,6 +65,8 @@ def run_next_task(exp_id, use_job=False):
         logging.info('Handling cmd: ' + ' '.join(cmd))
 
         try:
+            is_qsub_installed = subprocess.Popen('which qsub', stdout=subprocess.PIPE, shell=True)
+            use_job = bool(is_qsub_installed.communicate()[0])
             if use_job:
                 job_filename = get_job_filename(exp_id, resp_json)
                 job_file = open(job_filename, 'w')
@@ -75,7 +77,6 @@ def run_next_task(exp_id, use_job=False):
                 add_to_queue_cmd = 'qsub -pe orte 1 -o {0}.o -e {0}.e {0}'.format(job_filename)
                 # Note: should use separate files for stdout and stderr. Remove them only if they are empty or reported.
                 p1 = subprocess.Popen(add_to_queue_cmd, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # , close_fds=True)
-                # Note: should parse qsub job id:  p1.communicate()
                 logging.info('Called command: %s' % add_to_queue_cmd)
             else:
                 # logging.info('Calling: cmd=%s' % ' '.join(cmd))
@@ -125,9 +126,6 @@ def get_argparser():
     parser = argparse.ArgumentParser(description='Schedules tasks')
     parser.add_argument('-exp', '--exp_id', type=int, help='Experiment ID', nargs='?', default=None)
 
-    # Worker should find the job by itself.
-    parser.add_argument('-j', '--job', help='Create job and execute task through supercomputer task queue', nargs='?', const=True)
-
     parser.add_argument('-task', '--task_id', type=int, help='Task ID', nargs=None, default=None)
     parser.add_argument('-st', '--status', type=str, help='Status of the task. D - done, S - suspended.', nargs=None, default=None)
 
@@ -169,7 +167,7 @@ if __name__ == '__main__':
     args, unknown = get_argparser().parse_known_args()
 
     # Prepare environment
-    if args.env or not os.path.exists(MAIN_DIR) or not os.path.exists(JOBS_DIR):
+    if args.prepare_environment or not os.path.exists(MAIN_DIR) or not os.path.exists(JOBS_DIR):
         prepare_environment()
 
     # Get and run task
