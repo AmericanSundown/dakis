@@ -23,7 +23,7 @@ def prepare_environment():
     ]
     subprocess.Popen(' && '.join(cmds), shell=True)
     p1 = subprocess.Popen(' && '.join(cmds), shell=True)
-    p1.communicate()  # TODO: replace with p1.wait()
+    p1.communicate()    # Wait till command is finished
     print("\n == Successfully prepared Dakis environment == \n")
 
 
@@ -31,6 +31,7 @@ def parse_json(value):
     if type(value) == str or type(value) == unicode:
         return json.loads(value.replace("'", '"'))
     return value
+
 
 def get_job_filename(exp_id, resp_json):
     input_values = dict(parse_json(resp_json['input_values']))
@@ -41,12 +42,16 @@ def get_job_filename(exp_id, resp_json):
     return job_filename
 
 
-def run_next_task(exp_id, executable=None, use_job=False):
-    url = 'http://dakis.lt/api/exp/%d/next-task/' % exp_id
-    resp = requests.get(url)
-    logging.info('Getting next task: exp_id=%d, status_code=%d, resp=%s' % (exp_id, resp.status_code, resp.json()))
+def run_next_task(exp_id, use_job=False):
+    '''Get task data, prepare executable, check if supercomputer, run_task.'''
+    ## Note:  get rid of ``use_job``.  Also check if this is supercomputer to get rid of use_job option.
+    resp = requests.get('http://dakis.lt/api/exp/%d/next-task/' % exp_id)
+    # logging.info('Getting next task: exp_id=%d, status_code=%d, resp=%s' % (exp_id, resp.status_code, resp.json()))
     if resp.status_code == 200 and resp.json():
         resp_json = resp.json()
+
+        executable = prepare_executable(exp_id, resp_json['repository'], resp_json['branch'], resp_json['executable'])
+
         cmd = [
             '%s' % executable,       # Should pass path as it will be called  .strip('./')
             '--task_id=%s' % resp_json['task_id'],
@@ -92,24 +97,12 @@ def send_task_results(args, unknown):
     return resp.json()
 
 
-def prepare_executable(args):
+def prepare_executable(exp_id, repository, branch, exe_file):
     '''Clone and compile experiments code. Uses REST API if not all data provided in parameters.'''
-    exp_id = args.exp_id
-    if args.repository and args.branch and args.executable:
-        repository = args.repository
-        branch = args.branch
-        exe_file = args.executable
-    else:
-        url = 'http://dakis.lt/api/experiments/%d/' % exp_id
-        resp = requests.get(url)
-        exp = resp.json()
-        repository = exp['repository']    # Note: This information should be provided through Task API (during exp_pk request)
-        branch = exp['branch']            # API URL should be implemented using view, not django-rest-framework
-        exe_file = exp['executable']      # URL is: http://dakis.lt/api/exp/%d/next-task/'
-
     exe_dir = join(MAIN_DIR, 'exp_%d' % exp_id)
     executable = join(exe_dir, exe_file)
 
+    # Note: commit head should also be saved to the task.
     if not os.path.exists(executable):  # Note: code version will be cached, new commits won't be pulled
         if not os.path.exists(exe_dir):
             cmd = 'git clone {0} {1} && cd {1} && git fetch origin {2} && git checkout {2} && git pull -r && make compile'.format(repository, exe_dir, branch)
@@ -131,9 +124,6 @@ def get_argparser():
     import argparse
     parser = argparse.ArgumentParser(description='Schedules tasks')
     parser.add_argument('-exp', '--exp_id', type=int, help='Experiment ID', nargs='?', default=None)
-    parser.add_argument('-exe', '--executable', type=str, help='Executable file', nargs='?', default=None)
-    parser.add_argument('-rep', '--repository', type=str, help='Source code repository', nargs='?', default=None)
-    parser.add_argument('-br', '--branch', type=str, help='Repository branch', nargs='?', default=None)
 
     # Worker should find the job by itself.
     parser.add_argument('-j', '--job', help='Create job and execute task through supercomputer task queue', nargs='?', const=True)
@@ -146,40 +136,41 @@ def get_argparser():
     return parser
 
 
-def main():
+def main(args, unknown):
     global requests
     import requests
-    args, unknown = get_argparser().parse_known_args()
-
-    logging.basicConfig(
-        level=logging.INFO,
-        filename=os.path.expanduser(join(MAIN_DIR, 'worker.log')),
-        format='%(asctime)s - %(levelname)s - %(message)s',
-    )
-    logging.info('Called with argv: %s' % sys.argv)
-    # logging.info('Invoked with: exp_id=%s executable=%s task_id=%s calls=%s -duration=%s --subregions=%s --status=%s --job=%s' % (
-    #              args.exp_id, args.executable, args.task_id, args.calls, args.duration, args.subregions, args.status, args.job))
 
     if args.exp_id:
-        exe = prepare_executable(args)
-        run_next_task(args.exp_id, exe, args.job)
+        run_next_task(args.exp_id)
     elif args.task_id:
         # Send results
         resp_json = send_task_results(args, unknown)
-        print('Sent results, got response: ' + str(resp_json))
         # Remove job file if it exists
         exp_id = int(resp_json['experiment'].split('experiments')[-1].strip('/'))
         job_filename = get_job_filename(exp_id, resp_json)
         if os.path.isfile(job_filename):
             os.remove(job_filename)
         for file in os.listdir(JOBS_DIR):
-            if file.endswith('.o') or file.endswith('.e'):
+            if file.endswith('.o') or file.endswith('.e'):  # Note: should split output and error streams
                 os.remove(join(JOBS_DIR, file))
-        request_to_run_next_task(exp_id)
+        ## Run next task
+        run_next_task(exp_id)   # Note: To be able to use different resource pool should use: request_to_run_next_task() instead
 
 
 if __name__ == '__main__':
-    if (not os.path.exists(MAIN_DIR) or not os.path.exists(JOBS_DIR)
-        or 'env' in sys.argv or '-env' in sys.argv or '--prepare_environment' in sys.argv):
+    logging.basicConfig(
+        level=logging.INFO,
+        filename=os.path.expanduser(join(MAIN_DIR, 'worker.log')),
+        format='%(asctime)s - %(message)s',
+    )
+    logging.info('Called with argv: %s' % sys.argv)
+
+    # Parse arguments
+    args, unknown = get_argparser().parse_known_args()
+
+    # Prepare environment
+    if args.env or not os.path.exists(MAIN_DIR) or not os.path.exists(JOBS_DIR):
         prepare_environment()
-    main()
+
+    # Get and run task
+    main(args, unknown)
