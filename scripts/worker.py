@@ -152,7 +152,7 @@ def main(args, unknown):
             if file.endswith('.o') or file.endswith('.e'):  # Note: should split output and error streams
                 os.remove(join(JOBS_DIR, file))
         ## Run next task
-        run_next_task(exp_id)   # Note: To be able to use different resource pool should use: request_to_run_next_task() instead
+        request_to_run_next_task(exp_id)   # Note: cannot start new job from inside of job
 
 
 if __name__ == '__main__':
