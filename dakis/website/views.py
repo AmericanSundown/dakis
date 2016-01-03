@@ -79,13 +79,10 @@ def remove_exp_property(request, exp_id, prop_id):
 
 def run_worker(exp, user):
     cmd = 'sshpass -p%s ssh -o "StrictHostKeyChecking no" %s ' \
-          '"source /etc/profile; .dakis/worker.py -exp=%d -exe=%s -rep=%s -br=%s -j"' % (
+          '"source /etc/profile; .dakis/worker.py -exp=%d"' % (
         user.profile.host_password,
         user.profile.hostname,
         exp.pk,
-        exp.algorithm.executable,
-        exp.algorithm.repository,
-        exp.algorithm.branch,
     )
     logger.info('Running: ' + cmd)
 
