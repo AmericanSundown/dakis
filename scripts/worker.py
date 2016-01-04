@@ -90,7 +90,7 @@ def send_task_results(args, unknown):
     output_values = []
     for p in unknown:
         name, value = p.split('=')
-        name.strip('-')
+        name = name.lstrip('-')
         output_values.append([name, value])
     # logging.info('Sending: url=%s, data=%s' % (url, data))
     resp = requests.put(url, {'output_values': str(output_values), 'status': args.status})
