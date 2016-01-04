@@ -207,7 +207,12 @@ def exp_details(request, exp_id):
             else:
                 tasks = exp.tasks.filter(input_values__contains='["%s", %s]' % (group_key, value))
 
-            table_row = [value, tasks.filter(status='D').count(), tasks.filter(status='S').count()]
+            done = tasks.filter(status='D').count()
+            suspended = tasks.filter(status='S').count()
+            if done == 0 and suspended == 0:
+                continue
+
+            table_row = [value, done, suspended]
 
             for col_name, param_name, op_name in param_list:
                 result = operate(param_name, tasks, op_name)
