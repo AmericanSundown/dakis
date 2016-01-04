@@ -187,6 +187,17 @@ class Experiment(models.Model):
         for p in tasks_input_params:   # Warning: check No spaces in name and value to prevent injection attack
             Task.objects.create(input_values=p, experiment=self)
 
+    def get_unique_task_input_param_values(self, param_name):
+        unique_values = []
+        for task in self.tasks.all():
+            value = None
+            for p in task.input_values:
+                if p['name'] == param_name:
+                    value = p['value']
+            if value and value not in unique_values:
+                unique_values.append(value)
+        return unique_values
+
 
 class Task(models.Model):
     STATUS_CHOICES = (
