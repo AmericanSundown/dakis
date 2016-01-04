@@ -206,7 +206,7 @@ def exp_details(request, exp_id):
 
             table_row = [value, tasks.filter(status='D').count(), tasks.filter(status='S').count()]
 
-            for col_name, param_name, op_name in table_row:
+            for col_name, param_name, op_name in param_list:
                 result = operate(param_name, tasks, op_name)
                 table_row.append(result)
             table.append(table_row)
