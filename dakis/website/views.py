@@ -151,6 +151,8 @@ def operate(param_name, tasks, operator):
         for name, value in task.output_values:
             if name == param_name:
                 vals.append(value)
+    if not vals:
+        return None
     vals = sorted(vals)
     if operator == 'avg' or operator == 'average' or operator == 'mean':
         return sum(vals) / len(vals)
