@@ -151,6 +151,7 @@ def operate(param_name, tasks, operator):
         for name, value in task.output_values:
             if name == param_name:
                 vals.append(value)
+    logger.info('%s got values %s from %s tasks' % (param_name, len(vals), tasks.count()))
     if not vals:
         return None
     vals = sorted(vals)
@@ -193,7 +194,7 @@ def exp_details(request, exp_id):
         param_list = display_param_groups[group_key]    # [[col, param, op], ..]
 
         # Get table header
-        table_header = [group_key, 'Done', 'Suspended']
+        table_header = [group_key, 'Done', 'S']
         for col_name, param_name, operator in param_list:
             table_header.append(col_name)
         table.append(table_header)
