@@ -192,8 +192,8 @@ class Experiment(models.Model):
         for task in self.tasks.all():
             value = None
             for p in task.input_values:
-                if p['name'] == param_name:
-                    value = p['value']
+                if p[0] == param_name:
+                    value = p[1]
             if value and value not in unique_values:
                 unique_values.append(value)
         return unique_values
