@@ -58,7 +58,7 @@ class Problem(models.Model):
 
     input_params = JSONField(_('Input parameters'), null=True, default='',
             help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
-    output_params = JSONField(_('Output parameters'), null=True, default='',)
+    result_display_params = JSONField(_('Result display discribing parameters'), null=True, default='',)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     def __str__(self):
