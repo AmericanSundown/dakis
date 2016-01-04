@@ -81,7 +81,7 @@
                 {% if forloop.counter == 2 %}<tbody>{% endif %}
                 <tr style="text-align: right">
                   {% for val in row %}
-                    <td>{{ val }}</td>
+                    <td>{{ val|floatformat:"-2" }}</td>
                   {% endfor %}
                 </tr>
                 {% if forloop.last %}</tbody>{% endif %}
