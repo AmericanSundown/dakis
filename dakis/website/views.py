@@ -150,8 +150,8 @@ def operate(param_name, tasks, operator):
     for task in tasks:
         for name, value in task.output_values:
             if name == param_name:
-                vals.append(value)
-    logger.info('%s got values %s from %s tasks' % (param_name, len(vals), tasks.count()))
+                vals.append(float(value))
+    logger.info('%s got values %s from %s tasks: %s' % (param_name, len(vals), tasks.count(), str(vals)))
     if not vals:
         return None
     vals = sorted(vals)
