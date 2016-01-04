@@ -44,8 +44,8 @@ class ProblemSerializer(serializers.HyperlinkedModelSerializer):
     def save(self):
         if self.validated_data.get('input_params'):
             self.validated_data['input_params'] = json.loads(self.validated_data['input_params'].replace("'", '"'))
-        if self.validated_data.get('output_params'):
-            self.validated_data['output_params'] = json.loads(self.validated_data['output_params'].replace("'", '"'))
+        if self.validated_data.get('result_display_params'):
+            self.validated_data['result_display_params'] = json.loads(self.validated_data['result_display_params'].replace("'", '"'))
         super(ProblemSerializer, self).save()
 
 
