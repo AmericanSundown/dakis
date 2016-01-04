@@ -189,7 +189,7 @@ class Experiment(models.Model):
 
     def get_unique_task_input_param_values(self, param_name):
         unique_values = []
-        for task in self.tasks.all():
+        for task in self.tasks.order_by('pk'):
             value = None
             for p in task.input_values:
                 if p[0] == param_name:
