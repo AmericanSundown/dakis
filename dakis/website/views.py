@@ -175,11 +175,14 @@ def exp_details(request, exp_id):
     # Find display parameter groups: {key: [col, param, operator], ..}
     display_param_groups = collections.OrderedDict()
     for p in exp.problem.result_display_params:
-        key = p.get('group_by')
-        if key not in p.keys():
-            p[key] = [[p[col_name], p[param_name], p[operator]]]
+        col_name = p.get('column_name')
+        param_name = p.get('parameter_name')
+        operator = p.get('operator')
+        group_name = p.get('group_by')
+        if group_name not in display_param_groups.keys():
+            display_param_groups[group_name] = [[col_name, param_name, operator]]
         else:
-            p[key].append([p[col_name], p[param_name], p[operator]])
+            display_param_groups[group_name].append([col_name, param_name, operator])
 
     # Handle each group
     for group_key in display_param_groups.keys():
