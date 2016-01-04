@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import subprocess
+import collections
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -144,37 +145,73 @@ def create_gkls_tasks(request, exp_id):
     return redirect(exp)
 
 
-def exp_details(request, exp_id):
-    exp = get_object_or_404(Experiment, pk=exp_id)
-    # unique_classes = exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct()
+def operate(param_name, tasks, operator):
+    vals = []
+    for task in tasks:
+        for name, value in task.output_values:
+            if name == param_name:
+                vals.append(value)
+    vals = sorted(vals)
+    if operator == 'avg' or operator == 'average' or operator == 'mean':
+        return sum(vals) / len(vals)
+    elif operator == 'median':
+        if len(vals) % 2 == 1:
+            return vals[len(vals) // 2]
+        return (vals[len(vals) // 2 - 1] + vals[len(vals) // 2]) / 2
+    elif operator == 'max':
+        return max(vals)
+    elif operator == 'min':
+        return min(vals)
 
-    summaries = []
-    # for cls in unique_classes:
-    #     tasks_done = exp.tasks.filter(func_cls=cls, status="D")
-    #     tasks_suspended = exp.tasks.filter(func_cls=cls, status="S")
-    #     tasks = tasks_done | tasks_suspended
-    #     if tasks.exists():
-    #         calls = tasks.order_by('calls').values_list('calls', flat=True)
-    #         subregions = tasks.values_list('subregions', flat=True)
-    #         durations = tasks.values_list('duration', flat=True)
-    #         summary = {
-    #             'title': cls,
-    #             'tasks_count': tasks_done.count(),
-    #             'tasks_suspended': tasks_suspended.count(),
-    #             'calls_avg': sum([c for c in calls if c])/float(len(calls)),
-    #             'calls_100': calls[len(calls)-1],
-    #             'duration_avg':sum([d for d in durations if d])/float(len(durations)),
-    #             'subregions_avg': sum([s for s in subregions if s])/float(len(subregions)),
-    #         }
-    #         if len(calls) % 2 == 1:
-    #             summary['calls_50'] = calls[len(calls)//2]
-    #         else:
-    #             summary['calls_50'] = (calls[len(calls)//2-1] + calls[len(calls)//2])/2
-    #         summaries.append(summary)
+
+def exp_details(request, exp_id):
+    '''Generates table(s) for single algorithm results. Each table contains:
+    Table header
+    Table row with values for each group value'''
+    exp = get_object_or_404(Experiment, pk=exp_id)
+
+    tables = []
+
+    # Find display parameter groups: {key: [col, param, operator], ..}
+    display_param_groups = collections.OrderedDict()
+    for p in exp.problem.result_display_params:
+        key = p.get('group_by')
+        if key not in p.keys():
+            p[key] = [[p[col_name], p[param_name], p[operator]]]
+        else:
+            p[key].append([p[col_name], p[param_name], p[operator]])
+
+    # Handle each group
+    for group_key in display_param_groups.keys():
+        table = []    # Structure: [[col_name, col_name, ..], [val, val, ..], [val, val, ..], ..]
+
+        param_list = display_param_groups[group_key]    # [[col, param, op], ..]
+
+        # Get table header
+        table_header = [group_key, 'Done', 'Suspended']
+        for col_name, param_name, operator in param_list:
+            table_header.append(col_name)
+        table.append(table_header)
+
+        # Handle each param in this group
+        unique_values = exp.get_unique_task_input_param_values(group_key)   # Note: how to handle empty group key?
+        for value in unique_values:
+            if type(value) == str or type(value) == unicode:
+                tasks = exp.tasks.filter(input_values__contains='["%s", "%s"]' % (group_key, value))
+            else:
+                tasks = exp.tasks.filter(input_values__contains='["%s", %s]' % (group_key, value))
+
+            table_row = [value, tasks.filter(status='D').count(), tasks.filter(status='S').count()]
+
+            for col_name, param_name, op_name in table_row:
+                result = operate(param_name, tasks, op_name)
+                table_row.append(result)
+            table.append(table_row)
+        tables.append(table)
 
     return render(request, 'website/exp_details.html', {
         'exp': exp,
-        'summaries': summaries,
+        'tables': tables,
     })
 
 
@@ -205,6 +242,10 @@ def reset_cls_tasks(request, exp_id, func_cls, task_status):
 
 
 def compare_exps(request):
+    '''Generates tables for algorithm comparison
+    Table title
+    Table block - group value
+        Table row - algorithm'''
     exp_pks = request.GET.get('exps', '').split(',')
     exps = []
     unique_classes = set()

@@ -57,41 +57,40 @@
     </div>
   </div>
 
+{# For table in tables #}
+{#   for row in table header #}
+{#     if row is first: its header. #}
+{#     for value in row #}
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
-        <div class='text-center'><h3>{% trans 'Tasks summary' %}</h3></div>
+        <div class='text-center'><h3>{% trans 'Results' %}</h3></div>
+        {% for table in tables %}
           <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>{% trans 'Class' %}</th>
-                <th>{% trans 'Tasks' %}</th>
-                <th>{% trans 'CallsAvg' %}</th>
-                <th>{% trans 'Calls50' %}</th>
-                <th>{% trans 'Calls100' %}</th>
-                <th>{% trans 'DurationAvg' %}</th>
-                <th>{% trans 'SubregAvg' %}</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for summary in summaries %}
-            <tr style="text-align: right">
-                <td><a href="{% url 'task-list' %}?experiment={{ exp.pk }}&func_cls={{ summary.title }}">{{ summary.title }}</td>
-              <td>{{ summary.tasks_count }}
-                  {% if summary.tasks_suspended %}
-                    <span style='color: red; font-size: small;'>{{ summary.tasks_suspended }}</small>
-                  {% endif %}
-              </td>
-              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_avg|floatformat:"-2" }}</td>
-              <td>{% if summary.tasks_suspended > summary.tasks_count %}&gt;{% endif %}{{ summary.calls_50|floatformat }}</td>
-              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.calls_100 }}</td>
-              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.duration_avg|timedelta }}</td>
-              <td>{% if summary.tasks_suspended %}&gt;{% endif %}{{ summary.subregions_avg|floatformat:"-2" }}</td>
-            </tr>
+            {% for row in table %}
+              {% if forloop.first %}
+                <thead>
+                  <tr>
+                    {% for val in row %}
+                      <th>{{ val }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+              {% else %}
+                {% if forloop.counter == 2 %}<tbody>{% endif %}
+                <tr style="text-align: right">
+                  {% for val in row %}
+                    <td>{{ val }}</td>
+                  {% endfor %}
+                </tr>
+                {% if forloop.last %}</tbody>{% endif %}
+              {% endif %}
             {% endfor %}
-            </tbody>
           </table>
-      </div>
+        </div>
+      {% endfor %}
+
       <div class="col-md-6">
         <div class='text-center'><h4>{{ exp.algorithm }}</h4></div>
         {% if exp.description %}
