@@ -3,6 +3,7 @@ import json
 import logging
 import subprocess
 import collections
+import concurrency
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -121,10 +122,22 @@ def start_worker_view(request, exp_id):
 def get_next_task(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
     domain = Site.objects.get_current().domain
-    if exp.tasks.filter(status='C').exists() and exp.status in 'CR':
-        task = exp.tasks.filter(status='C').first()
-        task.status = 'R'
-        task.save()
+
+    def get_next_task_from_db():
+        if not exp.tasks.filter(status='C').exists() or exp.status not in 'CR':
+            return None
+        try:
+            task = exp.tasks.filter(status='C').first()
+            if not task:    # If there is no more tasks left
+                return None
+            task.status = 'R'
+            task.save()
+        except concurrency.exceptions.RecordModifiedError:
+            return get_next_task_from_db()
+        return task
+
+    task = get_next_task_from_db()
+    if task:
         return HttpResponse(json.dumps({
             'experiment': 'http://' + domain + reverse('experiment-detail', args=[exp.pk]),
             'input_values': task.input_values,
