@@ -41,6 +41,9 @@ def get_job_filename(exp_id, resp_json):
         job_filename = join(JOBS_DIR, 'e%t%d.sh' % (exp_id, resp_json['task_id']))
     return job_filename
 
+def was_called_in_supercomputer():
+    is_qsub_installed = subprocess.Popen('which qsub', stdout=subprocess.PIPE, shell=True)
+    return bool(is_qsub_installed.communicate()[0])
 
 def run_next_task(exp_id):
     '''Get task data, prepare executable, check if supercomputer, run_task.'''
@@ -65,9 +68,7 @@ def run_next_task(exp_id):
         logging.info('Handling cmd: ' + ' '.join(cmd))
 
         try:
-            is_qsub_installed = subprocess.Popen('which qsub', stdout=subprocess.PIPE, shell=True)
-            use_job = bool(is_qsub_installed.communicate()[0])
-            if use_job:
+            if was_called_in_supercomputer():
                 job_filename = get_job_filename(exp_id, resp_json)
                 job_file = open(job_filename, 'w')
                 job_file.write('#!/bin/bash\n#$ -j y\n#$ -l h_rt=12:00:00\n#$ -S /bin/bash\n#$ -cwd\nmpirun -np 1 ')  # Header
@@ -152,7 +153,10 @@ def main(args, unknown):
             if file.endswith('.o') or file.endswith('.e'):  # Note: should split output and error streams
                 os.remove(join(JOBS_DIR, file))
         ## Run next task
-        request_to_run_next_task(exp_id)   # Note: cannot start new job from inside of job
+        if was_called_in_supercomputer():
+            request_to_run_next_task(exp_id)   # Note: cannot start new job from inside of job
+        else:
+            run_next_task(exp_id)
 
 
 if __name__ == '__main__':
