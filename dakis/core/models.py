@@ -212,7 +212,6 @@ class Task(models.Model):
 
     version = IntegerVersionField()
 
-    duration = models.FloatField(_('Duration'), null=True, help_text=_('Task execution duration in seconds'))
     experiment = models.ForeignKey('Experiment', related_name='tasks', null=True,
                     help_text=_('ID of experiment to which this task is assigned to'))
     status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
