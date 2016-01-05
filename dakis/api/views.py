@@ -54,6 +54,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
+        exclude = ('version',)
 
     def save(self):
         if self.validated_data.get('input_values'):
