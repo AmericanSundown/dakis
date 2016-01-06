@@ -96,7 +96,7 @@
         {% if exp.description %}
           <p><small><b>{% trans 'Description' %}</b></small>: {{ exp.description }}</p>
         {% endif %}
-        {% for name, value in exp.details %}
+        {% for name, value in exp.algorithm.details %}
         <p><small><b>{{ name }}</b></small>: {{ value }}  &nbsp;<b><a class="remove-param-button" href="{% url 'remove-exp-property' exp.pk forloop.counter0 %}">x</a></b></p>
         {% endfor %}
         <div class="form-group">
