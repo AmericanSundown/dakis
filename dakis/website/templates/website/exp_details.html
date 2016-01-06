@@ -92,7 +92,6 @@
       {% endfor %}
 
       <div class="col-md-6">
-        {# <div class='text-center'><h4>{{ exp.algorithm }}</h4></div> #}
         {% if exp.description %}
           <p><small><b>{% trans 'Experiment' %}</b></small>: {{ exp.description }}</p>
         {% endif %}
@@ -105,6 +104,9 @@
         <div class='text-center' style='font-size: 10px;'><b>About algorithm</b></div>
         {% if exp.mistakes %}
           <p><small style="color: darkred;"><b>{% trans 'Mistake' %}</b></small>: {{ exp.mistakes }}</p>
+        {% endif %}
+        {% if exp.algorithm.description %}
+          <p><small><b>{% trans 'Description' %}</b></small>: {{ exp.algorithm.description }}</p>
         {% endif %}
         {% for name, value in exp.algorithm.details %}
         <p><small><b>{{ name }}</b></small>: {{ value }}  &nbsp;<b><a class="remove-param-button" href="{% url 'remove-exp-property' exp.pk forloop.counter0 %}">x</a></b></p>
