@@ -111,6 +111,10 @@ class Experiment(models.Model):
     def __str__(self):
         if self.algorithm:
             return self.algorithm.title
+        elif self.description:
+            if len(self.description) > 50:
+                return self.description[:50]
+            return self.description
         else:
             return 'New experiment %d' % self.pk
 
