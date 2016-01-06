@@ -62,20 +62,22 @@ def toggle_exp_status(request, exp_id):
     return redirect(exp)
 
 
-def add_exp_property(request, exp_id):
+def add_property(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
     if request.method == 'POST':
         form = PropertyForm(request.POST)
         if form.is_valid():
-            exp.details.append((form.cleaned_data['name'], form.cleaned_data['value']))
-            exp.save()
+            if not exp.algorithm.details:
+                exp.algorithm.details = []
+            exp.algorithm.details.append((form.cleaned_data['name'], form.cleaned_data['value']))
+            exp.algorithm.save()
     return redirect(exp)
 
 
-def remove_exp_property(request, exp_id, prop_id):
+def remove_property(request, exp_id, prop_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
-    exp.details.pop(int(prop_id))
-    exp.save()
+    exp.algorithm.details.pop(int(prop_id))
+    exp.algorithm.save()
     return redirect(exp)
 
 
