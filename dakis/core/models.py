@@ -69,7 +69,7 @@ class Problem(models.Model):
             title=self.title,
             description=self.description,
             input_params=self.input_params,
-            output_params=self.output_params,
+            result_display_params=self.result_display_params,
             parent=self.parent,
         )
 
