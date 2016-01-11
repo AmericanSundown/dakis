@@ -225,3 +225,65 @@ class Task(models.Model):
 
     stdout = models.TextField(_('stdout'), null=True, help_text=_('Standard output stream'))
     stderr = models.TextField(_('stderr'), null=True, help_text=_('Standard error stream'))
+
+    def get_input_param(self, name):
+        '''Returns input parameter value.'''
+        return dict(self.input_values).get(name)
+
+    def set_input_param(self, name, value):
+        '''Sets input parameter value.'''
+        index = None
+        if not self.input_values:
+            self.input_values = []
+        for i, (param_name, param_value) in enumerate(self.input_values):
+            if param_name == name:
+                index = i
+                break
+        if index is not None:
+            self.input_values[index][1] = value
+        else:
+            self.input_values.append([name, value])
+        return self.save()
+
+    def remove_input_param(self, name):
+        if not self.input_values:
+            return
+        index = None
+        for i, (param_name, param_value) in enumerate(self.input_values):
+            if param_name == name:
+                index = i
+                break
+        if index is not None:
+            return self.input_values.pop(index)
+        return
+
+    def get_output_param(self, name):
+        '''Returns output parameter value.'''
+        return dict(self.output_values).get(name)
+
+    def set_output_param(self, name, value):
+        '''Sets output parameter value.'''
+        index = None
+        if not self.output_values:
+            self.output_values = []
+        for i, (param_name, param_value) in enumerate(self.output_values):
+            if param_name == name:
+                index = i
+                break
+        if index is not None:
+            self.output_values[index][1] = value
+        else:
+            self.output_values.append([name, value])
+        return self.save()
+
+    def remove_output_param(self, name):
+        if not self.output_values:
+            return
+        index = None
+        for i, (param_name, param_value) in enumerate(self.output_values):
+            if param_name == name:
+                index = i
+                break
+        if index is not None:
+            return self.output_values.pop(index)
+        return
