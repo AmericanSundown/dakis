@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.contrib.sites.models import Site
 
 from dakis.core.models import Experiment, Task
-from dakis.website.forms import PropertyForm
+from dakis.website.forms import PropertyForm, ExperimentForm, AlgorithmForm, ProblemForm
 
 logger = logging.getLogger(__name__)
 
@@ -326,4 +326,28 @@ def compare_exps(request):
     return render(request, 'website/exps_comparison.html', {
         'exps': exps,
         'summaries': summaries,
+    })
+
+
+def exp_edit(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if request.method == 'POST':
+        exp_form = ExperimentForm(request.POST, instance=exp)
+        alg_form = AlgorithmForm(request.POST, instance=exp.algorithm)
+        prob_form = ProblemForm(request.POST, instance=exp.problem)
+
+        if exp_form.is_valid() and alg_form.is_valid() and prob_form.is_valid():
+             exp_form.save()
+             alg_form.save()
+             prob_form.save()
+    else:
+        exp_form = ExperimentForm(instance=exp)
+        alg_form = AlgorithmForm(instance=exp.algorithm)
+        prob_form = ProblemForm(instance=exp.problem)
+
+    return render(request, 'website/exp_edit.html', {
+        'exp': exp,
+        'exp_form': exp_form,
+        'alg_form': alg_form,
+        'prob_form': prob_form,
     })

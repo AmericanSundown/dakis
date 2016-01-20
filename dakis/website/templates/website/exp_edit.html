@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load trans blocktrans from i18n %}
+{% load timedelta from websitetags %}
+{% load cls from websitetags %}
+
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-9">
+        {% if exp.invalid %}<h2 class="pull-right"><span class="label label-danger">{% trans 'Not valid' %}</span></h2>{% endif %}
+        <h1>{{ exp }}</h1>
+      </div>
+      <div class="col-md-3" style='padding-top: 25px;'>
+        {% if user.is_authenticated %}
+          <div class="btn-toolbar">
+            <p>
+              <a href={% url 'experiment-detail' exp.pk %}>
+                <button class='btn btn-primary btn-sm'>{% trans 'Edit' %}</button></a>
+              <a href="{% url 'task-list' %}?experiment={{ exp.pk }}">
+                <button class='btn btn-default btn-sm' >{% trans 'Tasks' %}</button>
+              </a>
+              <a href="{% url 'fork-exp' exp.pk %}">
+                <button class='btn btn-default btn-sm' >{% trans 'Fork' %}</button>
+              </a>
+            </p>
+            <p>
+              {% if exp.status in 'CP' %}
+                <a href={% url 'toggle-exp-status' exp.pk %}>
+                  <button class='btn btn-default btn-sm'>
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                  </button></a>
+              {% elif exp.status == 'D' %}
+                <a href={% url 'toggle-exp-status' exp.pk %}>
+                  <button class='btn btn-default btn-sm'>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  </button></a>
+              {% else %}
+                <a href={% url 'toggle-exp-status' exp.pk %}>
+                  <button class='btn btn-default btn-sm'>
+                    <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                  </button></a>
+              {% endif %}
+              {% if exp.threads %}
+                  <span style="vertical-align: text-bottom;">
+                    &nbsp;&nbsp;&nbsp;{% trans 'Threads running:' %} <b>{{ exp.threads }}</b></span>
+                  <a href="{% url 'start-worker' exp.pk %}"><button class='btn btn-default btn-xs'>+1</button></a>
+                </p>
+              {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <form action="." method="post"> {% csrf_token %}
+          {% for field in exp_form %}
+            <p>
+              {{ field.errors }}
+              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label_tag }} </label>
+              <div class="">
+                {{ field|cls:"form-control" }}
+                {% if field.help_text %}
+                  <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
+                {% endif %}
+              </div>
+            </p>
+          {% endfor %}
+
+          {% for field in alg_form %}
+            <p>
+              {{ field.errors }}
+              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label_tag }} </label>
+              <div class="">
+                {{ field|cls:"form-control" }}
+                {% if field.help_text %}
+                  <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
+                {% endif %}
+              </div>
+            </p>
+          {% endfor %}
+
+          {% for field in prob_form %}
+            <p>
+              {{ field.errors }}
+              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label_tag }} </label>
+              <div class="">
+                {{ field|cls:"form-control" }}
+                {% if field.help_text %}
+                  <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
+                {% endif %}
+              </div>
+            </p>
+          {% endfor %}
+        </div>
+
+        {# {% for field in alg_form %} #}
+        {#   <div class="form-group"> #}
+        {#     {{ field.errors }} #}
+        {#     <label class="col-sm-2 control-label "> {{ field.label_tag }} </label> #}
+        {#     <div class="col-sm-10"> #}
+        {#       {{ field }} #}
+        {#       {% if field.help_text %} #}
+        {#         <span class="help-block">{{ field.help_text|safe }}</span> #}
+        {#       {% endif %} #}
+        {#     </div> #}
+        {#   </div> #}
+        {# {% endfor %} #}
+        {#  #}
+        {# {% for field in prob_form %} #}
+        {#   <div class="form-group"> #}
+        {#     {{ field.errors }} #}
+        {#     <label class="col-sm-2 control-label "> {{ field.label_tag }} </label> #}
+        {#     <div class="col-sm-10"> #}
+        {#       {{ field }} #}
+        {#       {% if field.help_text %} #}
+        {#         <span class="help-block">{{ field.help_text|safe }}</span> #}
+        {#       {% endif %} #}
+        {#     </div> #}
+        {#   </div> #}
+        {# {% endfor %} #}
+
+        <button class="btn btn-default col-sm-offset-2">Save</button>
+        </form>
+
+        <hr/>
+
+
+        {# {% if exp.problem %} #}
+        {#   <p><small><b>{% trans 'Problem' %}</b></small>: {{ exp.problem }}</p> #}
+        {# {% endif %} #}
+        {# {% if exp.algorithm %} #}
+        {#   <p><small><b>{% trans 'Algorithm' %}</b></small>: <a href="{{ exp.algorithm.repository }}/tree/{{ exp.algorithm.branch }}">{{ exp.algorithm }}</a></p> #}
+        {# {% endif %} #}
+        {#  #}
+        {# {% for name, value in exp.algorithm.details %} #}
+        {# <small><b>{{ name }}</b></small>: {{ value }}  &nbsp; #}
+        {# <form style="display: inline;" action="{% url 'remove-exp-property' exp.pk forloop.counter0 %}" method="post">{% csrf_token %} #}
+        {#   <button class="btn btn-xs remove-param-button" href=""><b>x</b></button> #}
+        {# </form><br/> #}
+        {# {% endfor %} #}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

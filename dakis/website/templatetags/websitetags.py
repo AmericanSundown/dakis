@@ -69,6 +69,11 @@ def formrenderer_filter(context, form):
 def idx(d, key):
     return d[key]
 
+@register.filter(name='cls')
+def add_class(field, cls):
+    field.field.widget.attrs['class'] = cls
+    return field
+
 
 @register.filter
 def not_major_exp_children(exp):
