@@ -75,9 +75,10 @@ def add_property(request, exp_id):
 
 
 def remove_property(request, exp_id, prop_id):
-    exp = get_object_or_404(Experiment, pk=exp_id)
-    exp.algorithm.details.pop(int(prop_id))
-    exp.algorithm.save()
+    if request.method == 'POST':
+        exp = get_object_or_404(Experiment, pk=exp_id)
+        exp.algorithm.details.pop(int(prop_id))
+        exp.algorithm.save()
     return redirect(exp)
 
 

@@ -104,7 +104,10 @@
           <p><small><b>{% trans 'Description' %}</b></small>: {{ exp.algorithm.description }}</p>
         {% endif %}
         {% for name, value in exp.algorithm.details %}
-        <p><small><b>{{ name }}</b></small>: {{ value }}  &nbsp;<b><a class="remove-param-button" href="{% url 'remove-exp-property' exp.pk forloop.counter0 %}">x</a></b></p>
+        <small><b>{{ name }}</b></small>: {{ value }}  &nbsp;
+        <form style="display: inline;" action="{% url 'remove-exp-property' exp.pk forloop.counter0 %}" method="post">{% csrf_token %}
+          <button class="btn btn-xs remove-param-button" href=""><b>x</b></button>
+        </form><br/>
         {% endfor %}
         <div class="form-group">
           <form method="post" action="{% url 'add-exp-property' exp.pk %}">{% csrf_token %}
