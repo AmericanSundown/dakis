@@ -198,10 +198,11 @@ def exp_details(request, exp_id):
         param_name = p.get('parameter_name')
         operator = p.get('operator')
         group_name = p.get('group_by')
+        formating = p.get('format')
         if group_name not in display_param_groups.keys():
-            display_param_groups[group_name] = [[col_name, param_name, operator]]
+            display_param_groups[group_name] = [[col_name, param_name, operator, formating]]
         else:
-            display_param_groups[group_name].append([col_name, param_name, operator])
+            display_param_groups[group_name].append([col_name, param_name, operator, formating])
 
     # Handle each group
     for group_key in display_param_groups.keys():
@@ -211,7 +212,7 @@ def exp_details(request, exp_id):
 
         # Get table header
         table_header = [group_key, 'Done', 'S']
-        for col_name, param_name, operator in param_list:
+        for col_name, param_name, operator, formating in param_list:
             table_header.append(col_name)
         table.append(table_header)
 
@@ -223,8 +224,12 @@ def exp_details(request, exp_id):
 
             table_row = [value, done, suspended]
 
-            for col_name, param_name, op_name in param_list:
+            for col_name, param_name, op_name, formating in param_list:
                 result = operate(param_name, tasks, op_name)
+                if formating == 'duration':
+                    result = str(datetime.timedelta(seconds=result))
+                    if '.' in result:
+                        result = result[:-5]
                 table_row.append(result)
             table.append(table_row)
         tables.append(table)
