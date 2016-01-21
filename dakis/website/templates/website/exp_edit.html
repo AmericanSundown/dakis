@@ -11,72 +11,37 @@
         {% if exp.invalid %}<h2 class="pull-right"><span class="label label-danger">{% trans 'Not valid' %}</span></h2>{% endif %}
         <h1>{{ exp }}</h1>
       </div>
-      <div class="col-md-3" style='padding-top: 25px;'>
-        {% if user.is_authenticated %}
-          <div class="btn-toolbar">
-            <p>
-              <a href={% url 'experiment-detail' exp.pk %}>
-                <button class='btn btn-primary btn-sm'>{% trans 'Edit' %}</button></a>
-              <a href="{% url 'task-list' %}?experiment={{ exp.pk }}">
-                <button class='btn btn-default btn-sm' >{% trans 'Tasks' %}</button>
-              </a>
-              <a href="{% url 'fork-exp' exp.pk %}">
-                <button class='btn btn-default btn-sm' >{% trans 'Fork' %}</button>
-              </a>
-            </p>
-            <p>
-              {% if exp.status in 'CP' %}
-                <a href={% url 'toggle-exp-status' exp.pk %}>
-                  <button class='btn btn-default btn-sm'>
-                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                  </button></a>
-              {% elif exp.status == 'D' %}
-                <a href={% url 'toggle-exp-status' exp.pk %}>
-                  <button class='btn btn-default btn-sm'>
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                  </button></a>
-              {% else %}
-                <a href={% url 'toggle-exp-status' exp.pk %}>
-                  <button class='btn btn-default btn-sm'>
-                    <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-                  </button></a>
-              {% endif %}
-              {% if exp.threads %}
-                  <span style="vertical-align: text-bottom;">
-                    &nbsp;&nbsp;&nbsp;{% trans 'Threads running:' %} <b>{{ exp.threads }}</b></span>
-                  <a href="{% url 'start-worker' exp.pk %}"><button class='btn btn-default btn-xs'>+1</button></a>
-                </p>
-              {% endif %}
-          </div>
-        {% endif %}
-      </div>
     </div>
-  </div>
-
-  <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
-        <form action="." method="post"> {% csrf_token %}
-          {% for field in exp_form|fields:alg_form|fields:prob_form|sort_exp_fields %}
-            <p>
-              {{ field.errors }}
-              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label }} </label>
-              <div class="">
-                {{ field|cls:"form-control" }}
-                {% if field.help_text %}
-                  <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
-                {% endif %}
-              </div>
-            </p>
-          {% endfor %}
+      <form action="." method="post"> {% csrf_token %}
+        <div class="col-md-3" style='padding-top: 25px; position: fixed; right: 0px; z-index: 5;'>
+          {% if user.is_authenticated %}
+            <div class="btn-toolbar">
+              <p>
+                <button class='btn btn-primary'>{% trans 'Save' %}</button>
+                <a href="{% url 'exp-summary' exp.pk %}"><button class='btn btn-default disabled'>{% trans 'Cancel' %}</button></a>
+              </p>
+            </div>
+          {% endif %}
         </div>
+        <div class="col-md-12">
+            {% for field in exp_form|fields:alg_form|fields:prob_form|sort_exp_fields %}  {# make dict of fields - any sequance would be available  #}
+            <p>                                                                           {# What would happen? #}
+                {{ field.errors }}
+                <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label }} </label>
+                <div class="">
+                  {{ field|cls:"form-control" }}
+                  {% if field.help_text %}
+                    <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
+                  {% endif %}
+                </div>
+              </p>
+            {% endfor %}
+          </div>
 
-        <button class="btn btn-default col-sm-offset-2">Save</button>
-        </form>
-
-        <hr/>
-
-      </div>
+        </div>
+      </form>
+      <hr/>
     </div>
   </div>
 
