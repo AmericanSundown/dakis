@@ -14,19 +14,19 @@ class Algorithm(models.Model):
     modified = ModificationDateTimeField()
     author = models.ForeignKey(User, null=True)
 
-    title = models.CharField(_('Algorithm title'), max_length=255, null=True,
+    title = models.CharField(_('Algorithm title'), max_length=255, null=True, blank=True,
         help_text=_('Unique verbose name of this algorithm'))
-    description = models.TextField(_('Description'), null=True,
+    description = models.TextField(_('Description'), null=True, blank=True,
         help_text=_('This algorithm description'))
 
-    repository = models.CharField(_('Source code repository'), max_length=255, null=True,
+    repository = models.CharField(_('Source code repository'), max_length=255, null=True, blank=True,
         help_text=_('Git of Mercurial repository, where source code is stored, e.g. http://github.com/niekas/dakis'))
-    branch = models.CharField(_('Branch'), max_length=255, null=True,
+    branch = models.CharField(_('Branch'), max_length=255, null=True, blank=True,
         help_text=_('Branch of source code repository, need only if its not master branch'))
-    executable = models.CharField(_('Executable'), max_length=255, null=True,
+    executable = models.CharField(_('Executable'), max_length=255, null=True, blank=True,
         help_text=_('Executable file in source code repository, e.g. main.out'))
 
-    details = JSONField(_('Algorithm details'), null=True, default='',
+    details = JSONField(_('Algorithm details'), null=True, blank=True, default='',
         help_text=_('Algorithm details in JSON format'))
 
     is_major = models.BooleanField(_('Is major'), default=False,
@@ -53,12 +53,13 @@ class Problem(models.Model):
     modified = ModificationDateTimeField()
     author = models.ForeignKey(User, null=True)
 
-    title = models.CharField(_('Problem title'), max_length=255, null=True, help_text=_('Unique verbose name of this problem'))
-    description = models.TextField(_('Description'), null=True, help_text=_('Problem description'))
+    title = models.CharField(_('Problem title'), max_length=255, null=True, blank=True,
+                             help_text=_('Unique verbose name of this problem'))
+    description = models.TextField(_('Description'), null=True, blank=True, help_text=_('Problem description'))
 
-    input_params = JSONField(_('Input parameters'), null=True, default='',
+    input_params = JSONField(_('Input parameters'), null=True, blank=True, default='',
             help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
-    result_display_params = JSONField(_('Result display discribing parameters'), null=True, default='',)
+    result_display_params = JSONField(_('Result display discribing parameters'), null=True, blank=True, default='',)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     def __str__(self):
@@ -87,7 +88,7 @@ class Experiment(models.Model):
     author = models.ForeignKey(User, null=True)
 
     # Experiment fields
-    description = models.TextField(_('Description'), null=True,
+    description = models.TextField(_('Description'), null=True, blank=True,
         help_text=_('This experiment description'))
 
     algorithm = models.ForeignKey('Algorithm', null=True, help_text=_('Algorithm which is used for this experiment'))
@@ -100,7 +101,7 @@ class Experiment(models.Model):
 
     invalid = models.BooleanField(_('Not valid'), default=False,
         help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
-    mistakes = models.TextField(_('Mistakes'), null=True,
+    mistakes = models.TextField(_('Mistakes'), null=True, blank=True,
         help_text=_('Descriptions of mistakes, which were found in this experiment'))
 
     is_major = models.BooleanField(_('Is major'), default=False,
