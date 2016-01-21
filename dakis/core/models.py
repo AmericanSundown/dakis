@@ -26,7 +26,7 @@ class Algorithm(models.Model):
     executable = models.CharField(_('Executable'), max_length=255, null=True, blank=True,
         help_text=_('Executable file in source code repository, e.g. main.out'))
 
-    details = JSONField(_('Algorithm details'), null=True, blank=True, default='',
+    details = JSONField(_('Algorithm details'), null=True, blank=True, default='[]',
         help_text=_('Algorithm details in JSON format'))
 
     is_major = models.BooleanField(_('Is major'), default=False,
@@ -57,9 +57,9 @@ class Problem(models.Model):
                              help_text=_('Unique verbose name of this problem'))
     description = models.TextField(_('Description'), null=True, blank=True, help_text=_('Problem description'))
 
-    input_params = JSONField(_('Input parameters'), null=True, blank=True, default='',
+    input_params = JSONField(_('Input parameters'), null=True, blank=True, default='[]',
             help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
-    result_display_params = JSONField(_('Result display discribing parameters'), null=True, blank=True, default='',)
+    result_display_params = JSONField(_('Result display discribing parameters'), null=True, blank=True, default='[]',)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     def __str__(self):
@@ -221,8 +221,8 @@ class Task(models.Model):
                     help_text=_('ID of experiment to which this task is assigned to'))
     status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
 
-    input_values = JSONField(_('Input parameters'), null=True, default='', help_text=_('Parameters for each experiment task.'))
-    output_values = JSONField(_('Output parameters'), null=True, default='',)
+    input_values = JSONField(_('Input parameters'), null=True, default='[]', help_text=_('Parameters for each experiment task.'))
+    output_values = JSONField(_('Output parameters'), null=True, default='[]',)
 
     stdout = models.TextField(_('stdout'), null=True, help_text=_('Standard output stream'))
     stderr = models.TextField(_('stderr'), null=True, help_text=_('Standard error stream'))
