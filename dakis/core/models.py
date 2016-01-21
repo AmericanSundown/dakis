@@ -192,7 +192,11 @@ class Experiment(models.Model):
         for p in tasks_input_params:   # Warning: check No spaces in name and value to prevent injection attack
             Task.objects.create(input_values=p, experiment=self)
 
-    def get_unique_task_input_param_values(self, param_name):
+    def get_tasks_grouped_by_input_param_value(self, param_name=None):
+        if param_name is None:
+            return [('all', self.tasks.all())]
+
+        # Find unique values
         unique_values = []
         for task in self.tasks.order_by('pk'):
             value = None
@@ -201,7 +205,17 @@ class Experiment(models.Model):
                     value = p[1]
             if value and value not in unique_values:
                 unique_values.append(value)
-        return unique_values
+
+        # Find task groups
+        groups_of_tasks = []
+        for value in unique_values:
+            if type(value) == str:
+                tasks = self.tasks.filter(input_values__contains='["%s", "%s"]' % (param_name, value))
+            else:
+                tasks = self.tasks.filter(input_values__contains='["%s", %s]' % (param_name, value))
+            groups_of_tasks.append((value, tasks))
+        return groups_of_tasks
+
 
 
 class Task(models.Model):

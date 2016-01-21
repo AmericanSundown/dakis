@@ -215,14 +215,7 @@ def exp_details(request, exp_id):
             table_header.append(col_name)
         table.append(table_header)
 
-        # Handle each param in this group
-        unique_values = exp.get_unique_task_input_param_values(group_key)   # Note: how to handle empty group key?
-        for value in unique_values:
-            if type(value) == str:
-                tasks = exp.tasks.filter(input_values__contains='["%s", "%s"]' % (group_key, value))
-            else:
-                tasks = exp.tasks.filter(input_values__contains='["%s", %s]' % (group_key, value))
-
+        for value, tasks in exp.get_tasks_grouped_by_input_param_value(group_key):
             done = tasks.filter(status='D').count()
             suspended = tasks.filter(status='S').count()
             if done == 0 and suspended == 0:
