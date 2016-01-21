@@ -74,6 +74,30 @@ def add_class(field, cls):
     field.field.widget.attrs['class'] = cls
     return field
 
+@register.filter(name='fields')
+def join_fields_of_forms(form1, form2, *args, **kwargs):
+    fields = []
+    for form in [form1, form2]:
+        if type(form) == list:
+            fields += form
+        else:
+            fields += form.visible_fields()
+            fields += form.hidden_fields()
+    return fields
+
+
+@register.filter
+def sort_exp_fields(fields):
+    ordered_labels = ['Description', 'Algorithm title', 'Source code repository', 'Branch', 'Executable',
+     'Algorithm details', 'Problem title', 'Input parameters', 'Result display discribing parameters',
+     'Is major', 'Status', 'Not valid', 'Mistakes',  'Parent']
+    sorted_fields = []
+    for label in ordered_labels:
+        for field in fields:
+            if label == str(field.label):
+                sorted_fields.append(field)
+    return sorted_fields
+
 
 @register.filter
 def not_major_exp_children(exp):

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load trans blocktrans from i18n %}
 {% load timedelta from websitetags %}
-{% load cls from websitetags %}
+{% load cls fields sort_exp_fields from websitetags %}
 
 
 {% block content %}
@@ -57,36 +57,10 @@
     <div class="row">
       <div class="col-md-12">
         <form action="." method="post"> {% csrf_token %}
-          {% for field in exp_form %}
+          {% for field in exp_form|fields:alg_form|fields:prob_form|sort_exp_fields %}
             <p>
               {{ field.errors }}
-              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label_tag }} </label>
-              <div class="">
-                {{ field|cls:"form-control" }}
-                {% if field.help_text %}
-                  <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
-                {% endif %}
-              </div>
-            </p>
-          {% endfor %}
-
-          {% for field in alg_form %}
-            <p>
-              {{ field.errors }}
-              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label_tag }} </label>
-              <div class="">
-                {{ field|cls:"form-control" }}
-                {% if field.help_text %}
-                  <span class="col-sm-offset-2 help-block">{{ field.help_text|safe }}</span>
-                {% endif %}
-              </div>
-            </p>
-          {% endfor %}
-
-          {% for field in prob_form %}
-            <p>
-              {{ field.errors }}
-              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label_tag }} </label>
+              <label class="col-sm-2 control-label" style="text-align: right;"> {{ field.label }} </label>
               <div class="">
                 {{ field|cls:"form-control" }}
                 {% if field.help_text %}
@@ -97,51 +71,11 @@
           {% endfor %}
         </div>
 
-        {# {% for field in alg_form %} #}
-        {#   <div class="form-group"> #}
-        {#     {{ field.errors }} #}
-        {#     <label class="col-sm-2 control-label "> {{ field.label_tag }} </label> #}
-        {#     <div class="col-sm-10"> #}
-        {#       {{ field }} #}
-        {#       {% if field.help_text %} #}
-        {#         <span class="help-block">{{ field.help_text|safe }}</span> #}
-        {#       {% endif %} #}
-        {#     </div> #}
-        {#   </div> #}
-        {# {% endfor %} #}
-        {#  #}
-        {# {% for field in prob_form %} #}
-        {#   <div class="form-group"> #}
-        {#     {{ field.errors }} #}
-        {#     <label class="col-sm-2 control-label "> {{ field.label_tag }} </label> #}
-        {#     <div class="col-sm-10"> #}
-        {#       {{ field }} #}
-        {#       {% if field.help_text %} #}
-        {#         <span class="help-block">{{ field.help_text|safe }}</span> #}
-        {#       {% endif %} #}
-        {#     </div> #}
-        {#   </div> #}
-        {# {% endfor %} #}
-
         <button class="btn btn-default col-sm-offset-2">Save</button>
         </form>
 
         <hr/>
 
-
-        {# {% if exp.problem %} #}
-        {#   <p><small><b>{% trans 'Problem' %}</b></small>: {{ exp.problem }}</p> #}
-        {# {% endif %} #}
-        {# {% if exp.algorithm %} #}
-        {#   <p><small><b>{% trans 'Algorithm' %}</b></small>: <a href="{{ exp.algorithm.repository }}/tree/{{ exp.algorithm.branch }}">{{ exp.algorithm }}</a></p> #}
-        {# {% endif %} #}
-        {#  #}
-        {# {% for name, value in exp.algorithm.details %} #}
-        {# <small><b>{{ name }}</b></small>: {{ value }}  &nbsp; #}
-        {# <form style="display: inline;" action="{% url 'remove-exp-property' exp.pk forloop.counter0 %}" method="post">{% csrf_token %} #}
-        {#   <button class="btn btn-xs remove-param-button" href=""><b>x</b></button> #}
-        {# </form><br/> #}
-        {# {% endfor %} #}
       </div>
     </div>
   </div>

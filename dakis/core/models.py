@@ -14,9 +14,9 @@ class Algorithm(models.Model):
     modified = ModificationDateTimeField()
     author = models.ForeignKey(User, null=True)
 
-    title = models.CharField(_('Algorithm title'), max_length=255, null=True, blank=True,
+    algorithm_title = models.CharField(_('Algorithm title'), max_length=255, null=True, blank=True,
         help_text=_('Unique verbose name of this algorithm'))
-    description = models.TextField(_('Description'), null=True, blank=True,
+    algorithm_description = models.TextField(_('Description'), null=True, blank=True,
         help_text=_('This algorithm description'))
 
     repository = models.CharField(_('Source code repository'), max_length=255, null=True, blank=True,
@@ -31,20 +31,20 @@ class Algorithm(models.Model):
 
     is_major = models.BooleanField(_('Is major'), default=False,
         help_text=_('Is this algorithm unique? And should it be used for comparison as its algorithm class representative?'))
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+    algorithm_parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     def __str__(self):
-        return str(self.title)
+        return str(self.algorithm_title)
 
     def dublicate(self):
         return Algorithm.objects.create(
-            title=self.title + ' (copy)',
-            description=self.description,
+            algorithm_title=self.algorithm_title + ' (copy)',
+            algorithm_description=self.algorithm_description,
             repository=self.repository,
             branch=self.branch,
             executable=self.executable,
             details=self.details,
-            parent=self.parent,
+            algorithm_parent=self.algorithm_parent,
         )
 
 
@@ -53,25 +53,25 @@ class Problem(models.Model):
     modified = ModificationDateTimeField()
     author = models.ForeignKey(User, null=True)
 
-    title = models.CharField(_('Problem title'), max_length=255, null=True, blank=True,
+    problem_title = models.CharField(_('Problem title'), max_length=255, null=True, blank=True,
                              help_text=_('Unique verbose name of this problem'))
-    description = models.TextField(_('Description'), null=True, blank=True, help_text=_('Problem description'))
+    problem_description = models.TextField(_('Description'), null=True, blank=True, help_text=_('Problem description'))
 
     input_params = JSONField(_('Input parameters'), null=True, blank=True, default='[]',
             help_text=_('Parameters for each experiment task. Ranges available, e.g. 1..10. Nesting available.'))
     result_display_params = JSONField(_('Result display discribing parameters'), null=True, blank=True, default='[]',)
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+    problem_parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
     def __str__(self):
-        return str(self.title)
+        return str(self.problem_title)
 
     def dublicate(self):
         return Problem.objects.create(
-            title=self.title,
-            description=self.description,
+            problem_title=self.problem_title,
+            problem_description=self.problem_description,
             input_params=self.input_params,
             result_display_params=self.result_display_params,
-            parent=self.parent,
+            problem_parent=self.problem_parent,
         )
 
 
@@ -111,7 +111,7 @@ class Experiment(models.Model):
 
     def __str__(self):
         if self.algorithm:
-            return self.algorithm.title
+            return self.algorithm.algorithm_title
         elif self.description:
             if len(self.description) > 50:
                 return self.description[:50]

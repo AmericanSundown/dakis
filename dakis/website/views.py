@@ -337,9 +337,15 @@ def exp_edit(request, exp_id):
         prob_form = ProblemForm(request.POST, instance=exp.problem)
 
         if exp_form.is_valid() and alg_form.is_valid() and prob_form.is_valid():
-             exp_form.save()
-             alg_form.save()
-             prob_form.save()
+            exp = exp_form.save()
+            alg = alg_form.save()
+            prob = prob_form.save()
+            if not exp.algorithm:
+                exp.algorithm = alg
+                exp.save()
+            if not exp.problem:
+                exp.problem = prob
+                exp.save()
     else:
         exp_form = ExperimentForm(instance=exp)
         alg_form = AlgorithmForm(instance=exp.algorithm)

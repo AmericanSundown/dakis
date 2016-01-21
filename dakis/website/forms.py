@@ -5,6 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 from dakis.core.models import Experiment, Algorithm, Problem
 
 
+def to_json(value_dict, key):
+    if value_dict.get(key):
+        value_dict[key] = json.loads(value_dict[key].replace("'", '"'))
+
+
 class PropertyForm(forms.Form):
     name = forms.CharField()
     value = forms.CharField()
@@ -33,22 +38,31 @@ class ExperimentForm(forms.ModelForm):
 class AlgorithmForm(forms.ModelForm):
     class Meta:
         model = Algorithm
-        fields = ('title', 'repository', 'branch', 'executable', 'details')
+        fields = ('algorithm_title', 'repository', 'branch', 'executable', 'details')
         widgets = {
             'details': forms.Textarea(attrs={'rows': 2, 'cols': 70}),
-            'title': forms.TextInput(attrs={'size': 71}),
+            'algorithm_title': forms.TextInput(attrs={'size': 71}),
             'repository': forms.TextInput(attrs={'size': 71}),
             'branch': forms.TextInput(attrs={'size': 71}),
             'executable': forms.TextInput(attrs={'size': 71}),
         }
 
+    def save_details(self):
+        to_json(self.validated_data, 'details')
+
+
 class ProblemForm(forms.ModelForm):
     class Meta:
         model = Problem
-        fields = ('title', 'input_params', 'result_display_params')
+        fields = ('problem_title', 'input_params', 'result_display_params')
         widgets = {
-            'title': forms.TextInput(attrs={'size': 71}),
+            'problem_title': forms.TextInput(attrs={'size': 71}),
             'input_params': forms.Textarea(attrs={'rows': 2, 'cols': 70}),
             'result_display_params': forms.Textarea(attrs={'rows': 2, 'cols': 70}),
         }
 
+    def save_input_params(self):
+        to_json(self.validated_data, 'input_params')
+
+    def save_result_display_params(self):
+        to_json(self.validated_data, 'result_display_params')
