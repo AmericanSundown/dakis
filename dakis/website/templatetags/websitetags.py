@@ -100,5 +100,15 @@ def sort_exp_fields(fields):
 
 
 @register.filter
+def format(value):
+    try:
+        return "%g" % value
+    except:
+        if value:
+            return value
+    return '–'
+
+
+@register.filter
 def not_major_exp_children(exp):
     return exp.children.filter(is_major=False)

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load trans blocktrans from i18n %}
-{% load timedelta from websitetags %}
+{% load timedelta format from websitetags %}
 
 
 {% block content %}
@@ -69,23 +69,23 @@
                 <thead>
                   <tr>
                     {% for val in row %}
-                      <th>{{ val }}</th>
+                    <th style="text-align: right;">{% if val %}{{ val }}{% endif %}</th>
                     {% endfor %}
                   </tr>
                 </thead>
               {% else %}
                 {% if forloop.counter == 2 %}<tbody>{% endif %}
-                <tr style="text-align: right">
+                <tr style="text-align: right;">
                   {% for val in row %}
-                    <td>{{ val|floatformat:"-2" }}</td>
+                    <td>{{ val|format }}</td>
                   {% endfor %}
                 </tr>
                 {% if forloop.last %}</tbody>{% endif %}
               {% endif %}
             {% endfor %}
           </table>
-        </div>
       {% endfor %}
+      </div>
 
       <div class="col-md-6">
         {% if exp.description %}

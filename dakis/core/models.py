@@ -194,7 +194,7 @@ class Experiment(models.Model):
 
     def get_tasks_grouped_by_input_param_value(self, param_name=None):
         if param_name is None:
-            return [('all', self.tasks.all())]
+            return [('Total:', self.tasks.all())]
 
         # Find unique values
         unique_values = []
