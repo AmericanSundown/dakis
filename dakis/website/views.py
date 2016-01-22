@@ -226,7 +226,7 @@ def exp_details(request, exp_id):
 
             for col_name, param_name, op_name, formating in param_list:
                 result = operate(param_name, tasks, op_name)
-                if formating == 'duration':
+                if formating == 'duration' and type(result) == float:
                     result = str(datetime.timedelta(seconds=result))
                     if '.' in result:
                         result = result[:-5]
