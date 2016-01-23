@@ -26,31 +26,41 @@ $(document).ready(function() {
     });
 
     // Bold best results
-    var cell_values = {};
-    var row_selector = $("tr[class^='cls']");
-    var cols = ['.cmp-avg', '.cmp-50', '.cmp-100'];
-    for (var i=0; i < row_selector.size(); i++) {
-        var cls = row_selector[i].classList[0];
-        for (j=0; j < cols.length; j++) {
-            var val = parseFloat($(row_selector[i]).find(cols[j]).html().replace('&gt;', ''));
-            var key = cls + cols[j];
-            if (key in cell_values) {
-                cell_values[key].push(val);
-            } else {
-                cell_values[key] = [val];
+    var tables = $("tbody");
+    for (var t=0; t < tables.size(); t++) {
+        var cell_values = {};
+        var row_selector = $(tables[t]).find("tr[class^='cls']");
+        var cols = [".cmp-4", ".cmp-5", ".cmp-6"];
+        console.log(t);
+
+        try {
+            for (var i=0; i < row_selector.size(); i++) {
+                var cls = row_selector[i].classList[0];
+                for (j=0; j < cols.length; j++) {
+                    var val = parseFloat($(row_selector[i]).find(cols[j]).html().replace('&gt;', ''));
+                    var key = cls + cols[j];
+                    if (key in cell_values) {
+                        cell_values[key].push(val);
+                    } else {
+                        cell_values[key] = [val];
+                    };
+                };
+            };
+        } catch(err) {
+            break;
+        };
+
+        for (var i=0; i < row_selector.size(); i++) {
+            var cls = row_selector[i].classList[0];
+            for (j=0; j < cols.length; j++) {
+                var cell = $(row_selector[i]).find(cols[j]);
+                var val = parseFloat(cell.html().replace('&gt;', ''));
+                var key = cls + cols[j];
+                if (val === Math.min.apply(Math, cell_values[key])) {
+                    $(cell).css("font-weight","bold");
+                };
             };
         };
     };
 
-    for (var i=0; i < row_selector.size(); i++) {
-        var cls = row_selector[i].classList[0];
-        for (j=0; j < cols.length; j++) {
-            var cell = $(row_selector[i]).find(cols[j]);
-            var val = parseFloat(cell.html().replace('&gt;', ''));
-            var key = cls + cols[j];
-            if (val === Math.min.apply(Math, cell_values[key])) {
-                $(cell).css("font-weight","bold");
-            };
-        };
-    };
 });

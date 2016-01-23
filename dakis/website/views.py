@@ -183,6 +183,88 @@ def operate(param_name, tasks, operator):
         return min(vals)
 
 
+
+def compare_exps(request):
+    '''Generates tables for algorithm comparison
+    Table title
+    Table block - group value
+        Table row - algorithm'''
+    exp_pks = request.GET.get('exps', '').split(',')
+    exps = []
+    exp_algorithm = []
+
+    tables = []
+
+    for exp_pk in exp_pks:
+        exp = get_object_or_404(Experiment, pk=exp_pk)
+        exps.append(exp)
+        exp_algorithm.append(exp.algorithm.algorithm_title[:60])
+
+    # Find display parameter groups: {input_param_name: [[algorithm, col_name, output_param_name, operator], [algorithm, col..], ..], ..}
+    display_param_groups = collections.OrderedDict()
+    # display_param_groups = # {input_param_name: [column_description, column_description, ...], ...}
+    # column_description = [col_name, output_param_name, operator, formating]
+    for exp in exps:
+        for p in exp.problem.result_display_params:
+            col_name = p.get('column_name')
+            param_name = p.get('parameter_name')
+            operator = p.get('operator')
+            group_name = p.get('group_by')
+            formating = p.get('format')
+            if group_name not in display_param_groups.keys():
+                display_param_groups[group_name] = [[col_name, param_name, operator, formating]]
+            else:
+                if [col_name, param_name, operator, formating] not in display_param_groups[group_name]:
+                    display_param_groups[group_name].append([col_name, param_name, operator, formating])
+
+
+    for group_key in display_param_groups.keys():
+        table = []    # Structure: [[col_name, col_name, ..], [val, val, ..], [val, val, ..], ..]
+
+        param_list = display_param_groups[group_key]    # [[col, param, op, formating], ..]
+
+        # Get table header
+        table_header = [group_key, 'Algorithm', 'Done', 'S']
+        for col_name, param_name, operator, formating in param_list:
+            table_header.append(col_name)
+        table.append(table_header)
+
+        value_tasks = collections.OrderedDict()  # [[value, (tasks, tasks, ...)], ...]
+        for exp in exps:
+            exp_value_tasks = exp.get_tasks_grouped_by_input_param_value(group_key)  # [[value, task], ...]
+            for value, tasks in exp_value_tasks:
+                if not value_tasks.get(value):
+                    value_tasks[value] = [tasks]
+                else:
+                    value_tasks[value].append(tasks)
+
+        # table = [[header_col, header_col], [group_value, [[alg1, val1, val2..], [alg2, val1, val2..], ..], [group_val,..]
+        for value, tasks_list in value_tasks.items():
+            table_merged_row = [value, []]
+            for exp_id, tasks in enumerate(tasks_list):
+                done = tasks.filter(status='D').count()
+                suspended = tasks.filter(status='S').count()
+                if done == 0 and suspended == 0:
+                    continue
+
+                table_row = [exp_algorithm[exp_id], done, suspended]
+
+                for col_name, param_name, op_name, formating in param_list:
+                    result = operate(param_name, tasks, op_name)
+                    if formating == 'duration' and type(result) == float:
+                        result = str(datetime.timedelta(seconds=result))
+                        if '.' in result:
+                            result = result[:-5]
+                    table_row.append(result)
+                table_merged_row[-1].append(table_row)
+            table.append(table_merged_row)
+        tables.append(table)
+
+    return render(request, 'website/exp_compare.html', {
+        'exps': exps,
+        'tables': tables,
+    })
+
 def exp_details(request, exp_id):
     '''Generates table(s) for single algorithm results. Each table contains:
     Table header
@@ -264,67 +346,6 @@ def reset_cls_tasks(request, exp_id, func_cls, task_status):
             task.status = 'C'
             task.save()
     return redirect(exp)
-
-
-def compare_exps(request):
-    '''Generates tables for algorithm comparison
-    Table title
-    Table block - group value
-        Table row - algorithm'''
-    exp_pks = request.GET.get('exps', '').split(',')
-    exps = []
-    unique_classes = set()
-    for exp_pk in exp_pks:
-        exp = get_object_or_404(Experiment, pk=exp_pk)
-        exps.append(exp)
-
-        for cls in exp.tasks.values_list('func_cls', flat=True).order_by('func_cls').distinct():
-            unique_classes.add(cls)
-
-    # list detail exp
-    summaries = []
-    for cls in unique_classes:
-        summary = {
-            'algorithm': [],
-            'exp_pk': [],
-            'cls': [],
-            'title': [],     # How to mark, which is the highest? Should I pack color too? - simples solution.
-            'tasks_count': [],
-            'tasks_suspended': [],
-            'calls_avg': [],
-            'calls_50': [],
-            'calls_100': [],
-            'duration_avg': [],
-            'subregions_avg': [],
-        }
-
-        for exp in exps:
-            tasks_done = exp.tasks.filter(func_cls=cls, status="D")
-            tasks_suspended = exp.tasks.filter(func_cls=cls, status="S")
-            tasks = tasks_done | tasks_suspended
-            if tasks.exists():
-                calls = tasks.order_by('calls').values_list('calls', flat=True)
-                subregions = tasks.values_list('subregions', flat=True)
-                durations = tasks.values_list('duration', flat=True)
-                summary['algorithm'].append(exp.algorithm)
-                summary['exp_pk'].append(exp.pk)
-                summary['cls'].append(cls)
-                summary['tasks_count'].append(tasks_done.count())
-                summary['tasks_suspended'].append(tasks_suspended.count())
-                summary['calls_avg'].append(sum([c for c in calls if c])/float(len(calls)))
-                summary['calls_100'].append(calls[len(calls)-1])
-                summary['duration_avg'].append(sum([d for d in durations if d])/float(len(durations)))
-                summary['subregions_avg'].append(sum([s for s in subregions if s])/float(len(subregions)))
-                if len(calls) % 2 == 1:
-                    summary['calls_50'].append(calls[len(calls)//2])
-                else:
-                    summary['calls_50'].append((calls[len(calls)//2-1] + calls[len(calls)//2])/2)
-        summaries.append(summary)
-
-    return render(request, 'website/exps_comparison.html', {
-        'exps': exps,
-        'summaries': summaries,
-    })
 
 
 def exp_edit(request, exp_id):
