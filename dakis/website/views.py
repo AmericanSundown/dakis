@@ -198,7 +198,7 @@ def compare_exps(request):
     for exp_pk in exp_pks:
         exp = get_object_or_404(Experiment, pk=exp_pk)
         exps.append(exp)
-        exp_algorithm.append(exp.algorithm.algorithm_title[:60])
+        exp_algorithm.append(exp.algorithm.algorithm_title[:24])
 
     # Find display parameter groups: {input_param_name: [[algorithm, col_name, output_param_name, operator], [algorithm, col..], ..], ..}
     display_param_groups = collections.OrderedDict()
