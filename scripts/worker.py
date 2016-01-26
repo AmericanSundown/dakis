@@ -60,10 +60,15 @@ def run_next_task(exp_id):
             '--task_id=%s' % resp_json['task_id'],
             '--callback=%s' % join(MAIN_DIR, 'worker.py'),
         ]
+
+        max_duration = 43200   # 12 hours
         for name, value in parse_json(resp_json['input_values']):
             name = ''.join(str(name).split())   # Note: this is protection for injection attack
             value = ''.join(str(value).split())
             cmd.append('--%s=%s' % (name, value))
+            if name == 'max_duration' and int(value) > max_duration:
+                max_duration = int(value)
+        max_duration = '%d:%.2d:%.2d' % (max_duration / 3600, (max_duration % 3600) / 60, max_duration % 60)
 
         logging.info('Handling cmd: ' + ' '.join(cmd))
 
@@ -71,7 +76,7 @@ def run_next_task(exp_id):
             if was_called_in_supercomputer():
                 job_filename = get_job_filename(exp_id, resp_json)
                 job_file = open(job_filename, 'w')
-                job_file.write('#!/bin/bash\n#$ -j y\n#$ -l h_rt=12:00:00\n#$ -S /bin/bash\n#$ -cwd\nmpirun -np 1 ')  # Header
+                job_file.write('#!/bin/bash\n#$ -j y\n#$ -l h_rt=%s\n#$ -S /bin/bash\n#$ -cwd\nmpirun -np 1 ' % max_duration)
                 job_file.write(' '.join(cmd) + '\n')
                 job_file.close()
                 logging.info('Created job file: %s' % job_filename)
