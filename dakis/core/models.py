@@ -192,6 +192,19 @@ class Experiment(models.Model):
         for p in tasks_input_params:   # Warning: check No spaces in name and value to prevent injection attack
             Task.objects.create(input_values=p, experiment=self)
 
+    def update_tasks_input_values(self):
+        static_params = {}
+        for param in self.problem.input_params:
+            name = param.get('name')
+            value = param.get('value')
+            if ',' not in value and '..' not in value:
+                static_params[name] = value
+
+        for task in self.tasks.all():
+            for key in static_params:
+                task.set_input_param(key, static_params[key])
+
+
     def get_tasks_grouped_by_input_param_value(self, param_name=None):
         if param_name is None:
             return [('Total:', self.tasks.all())]

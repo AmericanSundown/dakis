@@ -21,6 +21,10 @@
                 <button class='btn btn-primary'>{% trans 'Save' %}</button>
                 <a href="{% url 'exp-summary' exp.pk %}"><button class='btn btn-default disabled'>{% trans 'Cancel' %}</button></a>
               </p>
+              <p>
+                <a href="{% url 'exp-update-params' exp.pk %}">
+                <button class='btn btn-default disabled'>{% trans 'Update task params' %}</button></a>
+              </p>
             </div>
           {% endif %}
         </div>

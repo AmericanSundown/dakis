@@ -152,12 +152,9 @@ def get_next_task(request, exp_id):
     return HttpResponse(json.dumps({}), content_type="application/json")
 
 
-def create_gkls_tasks(request, exp_id):
+def update_params(request, exp_id):
     exp = get_object_or_404(Experiment, pk=exp_id)
-    if exp.tasks.all().count() < 800:
-        for cls in range(1, 9):
-            for fid in range(1, 101):
-                Task.objects.create(experiment=exp, func_cls=cls, func_id=fid)
+    exp.update_tasks_input_values()
     return redirect(exp)
 
 
