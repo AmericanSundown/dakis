@@ -362,6 +362,7 @@ def exp_edit(request, exp_id):
             if not exp.problem:
                 exp.problem = prob
                 exp.save()
+            return redirect(exp)
     else:
         exp_form = ExperimentForm(instance=exp)
         alg_form = AlgorithmForm(instance=exp.algorithm)
