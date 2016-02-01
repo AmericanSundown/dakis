@@ -4,6 +4,7 @@ import logging
 import subprocess
 import collections
 import concurrency
+from difflib import ndiff
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -188,14 +189,33 @@ def compare_exps(request):
         Table row - algorithm'''
     exp_pks = request.GET.get('exps', '').split(',')
     exps = []
-    exp_algorithm = []
+    exp_algorithm = ['']
+    exp_algorithm_titles = []
 
     tables = []
 
     for exp_pk in exp_pks:
         exp = get_object_or_404(Experiment, pk=exp_pk)
         exps.append(exp)
-        exp_algorithm.append(exp.algorithm.algorithm_title[:24])
+        exp_algorithm_titles.append(exp.algorithm.algorithm_title)
+
+    # Truncate algorithm titles to 24 chars
+    for i in range(len(exp_algorithm_titles) - 1):
+        diff1 = ''
+        diff2 = ''
+        for diff in list(ndiff(exp_algorithm_titles[i].split(), exp_algorithm_titles[i+1].split())):
+            if diff.startswith('-'):
+                diff1 += diff[2:]
+            elif diff.startswith('+'):
+                diff2 += diff[2:]
+
+        if not diff1:
+            diff1 = exp_algorithm_titles[i]
+        if not diff2:
+            diff2 = exp_algorithm_titles[i+1]
+
+        exp_algorithm[i] = diff1[:24]
+        exp_algorithm.append(diff2[:24])
 
     # Find display parameter groups: {input_param_name: [[algorithm, col_name, output_param_name, operator], [algorithm, col..], ..], ..}
     display_param_groups = collections.OrderedDict()
