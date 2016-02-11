@@ -45,6 +45,10 @@
                   <span style="vertical-align: text-bottom;">
                     &nbsp;&nbsp;&nbsp;{% trans 'Threads running:' %} <b>{{ exp.threads }}</b></span>
                   <a href="{% url 'start-worker' exp.pk %}"><button class='btn btn-default btn-xs'>+1</button></a>
+                  <form style="display: inline !important;" action="{% url 'exp-add-threads' exp.pk %}" method="post">{% csrf_token %}
+                    <input class="shadow-input" type="text" name="threads" style="width: 34px"></input>
+                    <button class="btn btn-default btn-xs">+</button>
+                  </form>
                 </p>
               {% endif %}
           </div>

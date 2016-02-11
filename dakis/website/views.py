@@ -5,6 +5,7 @@ import subprocess
 import collections
 import concurrency
 from difflib import ndiff
+from time import sleep
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -394,3 +395,19 @@ def exp_edit(request, exp_id):
         'alg_form': alg_form,
         'prob_form': prob_form,
     })
+
+
+def add_threads(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if request.method == 'POST':
+        try:
+            threads = int(request.POST.get('threads'))
+            if threads < 200 and threads > 0:
+                for i in range(threads):
+                    run_worker(exp, request.user)
+                    exp.threads += 1
+                    exp.save()
+                    sleep(0.1)
+        except:
+            pass
+    return redirect(exp)
