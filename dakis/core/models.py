@@ -139,15 +139,15 @@ class Experiment(models.Model):
         '''Converts string to element list.'''
         lst = []
         for e in rng.split(','):
-            if '..' in e:
-                start, end = e.split('..')
-                for i in range(int(start), int(end) + 1):
-                    lst.append(i)
-            else:
-                try:
+            try:
+                if '..' in e:
+                    start, end = e.split('..')
+                    for i in range(int(start), int(end) + 1):
+                        lst.append(i)
+                else:
                     lst.append(int(e))
-                except:
-                    lst.append(e)
+            except ValueError:
+                lst.append(e)
         return lst
 
     def pair_operator(self, tasks_input_params, name, value, operate_on=None):
