@@ -98,6 +98,7 @@
         {% if exp.problem %}
           <p><small><b>{% trans 'Problem' %}</b></small>: {{ exp.problem }}</p>
         {% endif %}
+        <p><small><b>{% trans 'Tasks done' %}</b></small>: {{ tasks_done }} {% if tasks_suspended %}({{ tasks_suspended }}){% endif %} / {{ exp.tasks.count }}</p>
         {% if exp.algorithm %}
           <p><small><b>{% trans 'Algorithm' %}</b></small>: <a href="{{ exp.algorithm.repository }}/tree/{{ exp.algorithm.branch }}">{{ exp.algorithm }}</a></p>
         {% endif %}

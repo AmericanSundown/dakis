@@ -337,6 +337,8 @@ def exp_details(request, exp_id):
     return render(request, 'website/exp_details.html', {
         'exp': exp,
         'tables': tables,
+        'tasks_done': exp.tasks.filter(status='D').count(),
+        'tasks_suspended': exp.tasks.filter(status='S').count(),
     })
 
 
