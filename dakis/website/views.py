@@ -406,8 +406,9 @@ def add_threads(request, exp_id):
                 for i in range(threads):
                     run_worker(exp, request.user)
                     exp.threads += 1
+                    exp.status = 'R'
                     exp.save()
-                    sleep(0.1)
+                    sleep(1)
         except:
             pass
     return redirect(exp)
