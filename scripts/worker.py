@@ -136,7 +136,7 @@ def get_argparser():
     parser.add_argument('-exp', '--exp_id', type=int, help='Experiment ID', nargs='?', default=None)
 
     parser.add_argument('-task', '--task_id', type=int, help='Task ID', nargs=None, default=None)
-    parser.add_argument('-st', '--status', type=str, help='Status of the task. D - done, S - suspended.', nargs=None, default=None)
+    parser.add_argument('-st', '--status', type=str, help='Status of the task. D - done, S - suspended.', nargs=None, default='D')
 
     # Prepare environment arguments
     parser.add_argument('-env', '--prepare_environment', help='Create ~/.dakis dir and prepare environment', nargs='?', const=True)
