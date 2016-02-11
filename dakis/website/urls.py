@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^api/exp/(?P<exp_id>\d+)/remove-property/(?P<prop_id>\d+)/', views.remove_property, name='remove-exp-property'),
     url(r'^api/exp/(?P<exp_id>\d+)/start/', views.start_worker_view, name='start-worker'),
     url(r'^api/exp/(?P<exp_id>\d+)/reset-tasks/(?P<task_status>\w{1})/', views.reset_exp_tasks, name='reset-exp-tasks'),
+    url(r'^api/exp/(?P<exp_id>\d+)/delete-tasks/', views.delete_exp_tasks, name='delete-exp-tasks'),
     url(r'^api/exp/(?P<exp_id>\d+)/cls/(?P<func_cls>\d+)/reset-tasks/(?P<task_status>\w{1})/', views.reset_cls_tasks, name='reset-cls-tasks'),
     url(r'^api/exp/(?P<exp_id>\d+)/toggle-status/', views.toggle_exp_status, name='toggle-exp-status'),
     url(r'^api/exp/(?P<exp_id>\d+)/add-threads/', views.add_threads, name='exp-add-threads'),

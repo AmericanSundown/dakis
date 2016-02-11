@@ -9,13 +9,11 @@
 <span style='padding: 10px'>
 {# {% pdb %} #}
 {% if request.query_params.experiment %}
-  <a href="{% url 'reset-exp-tasks' request.query_params.experiment 'S' %}"><button>Reset exp suspended tasks</button></a>
-  <a href="{% url 'reset-exp-tasks' request.query_params.experiment 'R' %}"><button>Reset exp running tasks</button></a>
-{% else %}
-  {% if request.query_params.func_cls %}
-    <a href="{% url 'reset-cls-tasks' request.query_params.experiment request.query_params.func_cls 'S' %}"><button>Reset class suspended tasks</button></a>
-    <a href="{% url 'reset-cls-tasks' request.query_params.experiment request.query_params.func_cls 'R' %}"><button>Reset class running tasks</button></a>
-  {% endif %}
+  <a href="{% url 'reset-exp-tasks' request.query_params.experiment 'S' %}"><button>Reset suspended tasks</button></a>
+  <a href="{% url 'reset-exp-tasks' request.query_params.experiment 'R' %}"><button>Reset running tasks</button></a>
+  <form style="display: inline;" action="{% url 'delete-exp-tasks' request.query_params.experiment %}" method='post'>{% csrf_token %}
+    <a><button>Delete all tasks</button></a>
+  </form>
 {% endif %}
 </span>
 {% endblock %}

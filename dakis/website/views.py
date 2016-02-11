@@ -358,6 +358,14 @@ def reset_exp_tasks(request, exp_id, task_status):
     return redirect(exp)
 
 
+def delete_exp_tasks(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if request.method == 'POST':
+        for t in exp.tasks.all():
+            t.delete()
+    return redirect(exp)
+
+
 def reset_cls_tasks(request, exp_id, func_cls, task_status):
     '''Resets all suspended tasks in same class as provided task'''
     exp = get_object_or_404(Experiment, pk=exp_id)
