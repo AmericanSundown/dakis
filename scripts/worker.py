@@ -112,7 +112,10 @@ def prepare_executable(exp_id, repository, branch, exe_file):
     # Note: commit head should also be saved to the task.
     if not os.path.exists(executable):  # Note: code version will be cached, new commits won't be pulled
         if not os.path.exists(exe_dir):
-            cmd = 'git clone {0} {1} && cd {1} && git fetch origin {2} && git checkout {2} && git pull -r && make compile'.format(repository, exe_dir, branch)
+            if 'hg@' not in repository:
+                cmd = 'git clone {0} {1} && cd {1} && git fetch origin {2} && git checkout {2} && git pull -r && make compile'.format(repository, exe_dir, branch)
+            else:
+                cmd = 'hg clone {0} {1} && cd {1} && make compile'.format(repository, exe_dir, branch)
             proc = subprocess.Popen(cmd, shell=True)
             proc.communicate()
         else:
