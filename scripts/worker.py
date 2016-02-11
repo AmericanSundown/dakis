@@ -38,7 +38,7 @@ def get_job_filename(exp_id, resp_json):
     if input_values.get('func_cls') and input_values.get('func_id'):
         job_filename = join(JOBS_DIR, 'e%dc%df%d.sh' % (exp_id, input_values['func_cls'], input_values['func_id']))
     else:
-        job_filename = join(JOBS_DIR, 'e%dt%d.sh' % (exp_id, resp_json['id']))
+        job_filename = join(JOBS_DIR, 'e%dt%d.sh' % (exp_id, resp_json.get('task_id') or resp_json.get('id')))
     return job_filename
 
 def was_called_in_supercomputer():
