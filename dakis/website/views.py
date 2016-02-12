@@ -152,6 +152,11 @@ def get_next_task(request, exp_id):
             'branch': task.experiment.algorithm.branch,
             'executable': task.experiment.algorithm.executable,
         }), content_type="application/json")
+    else:
+        exp.threads -= 1
+        if exp.threads == 0:
+            exp.status = 'D'
+        exp.save()
     return HttpResponse(json.dumps({}), content_type="application/json")
 
 
