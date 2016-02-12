@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^api/exp/(?P<exp_id>\d+)/cls/(?P<func_cls>\d+)/reset-tasks/(?P<task_status>\w{1})/', views.reset_cls_tasks, name='reset-cls-tasks'),
     url(r'^api/exp/(?P<exp_id>\d+)/toggle-status/', views.toggle_exp_status, name='toggle-exp-status'),
     url(r'^api/exp/(?P<exp_id>\d+)/add-threads/', views.add_threads, name='exp-add-threads'),
+    url(r'^api/exp/(?P<exp_id>\d+)/use-parent-algorithm/', views.use_parent_algorithm, name='exp-use-parent-algorithm'),
+    url(r'^api/exp/(?P<exp_id>\d+)/use-new-algorithm/', views.use_new_algorithm, name='exp-use-new-algorithm'),
 ]
 
 urlpatterns += [

@@ -423,3 +423,19 @@ def add_threads(request, exp_id):
         except:
             pass
     return redirect(exp)
+
+
+def use_parent_algorithm(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if exp.parent and exp.algorithm != exp.parent.algorithm:
+        exp.algorithm = exp.parent.algorithm
+        exp.save()
+    return redirect(exp)
+
+
+def use_new_algorithm(request, exp_id):
+    exp = get_object_or_404(Experiment, pk=exp_id)
+    if exp.parent and exp.algorithm == exp.parent.algorithm:
+        exp.algorithm = exp.parent.algorithm.dublicate()
+        exp.save()
+    return redirect(exp)

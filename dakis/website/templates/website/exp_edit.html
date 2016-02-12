@@ -25,6 +25,19 @@
                 <a href="{% url 'exp-update-params' exp.pk %}">
                 <button class='btn btn-default disabled'>{% trans 'Update task params' %}</button></a>
               </p>
+              <p>
+              {% if exp.parent %}
+                {% if exp.algorithm.pk == exp.parent.algorithm.pk %}
+                  <a href="{% url 'exp-use-new-algorithm' exp.pk %}">
+                    <button class='btn btn-default disabled'>{% trans 'Use new algorithm' %}</button>
+                  </a>
+                {% else %}
+                  <a href="{% url 'exp-use-parent-algorithm' exp.pk %}">
+                    <button class='btn btn-default disabled'>{% trans 'Use parent algorithm' %}</button>
+                  </a>
+                {% endif %}
+              {% endif %}
+              </p>
             </div>
           {% endif %}
         </div>
