@@ -53,7 +53,7 @@ def run_next_task(exp_id):
     if resp.status_code == 200 and resp.json():
         resp_json = resp.json()
 
-        executable = prepare_executable(exp_id, resp_json['repository'], resp_json['branch'], resp_json['executable'])
+        executable = prepare_executable(resp_json['algorithm_id'], resp_json['repository'], resp_json['branch'], resp_json['executable'])
 
         cmd = [
             '%s' % executable,       # Should pass path as it will be called  .strip('./')
@@ -104,9 +104,9 @@ def send_task_results(args, unknown):
     return resp.json()
 
 
-def prepare_executable(exp_id, repository, branch, exe_file):
+def prepare_executable(alg_id, repository, branch, exe_file):    # Note: Should get algorithm id, not experiment id
     '''Clone and compile experiments code. Uses REST API if not all data provided in parameters.'''
-    exe_dir = join(MAIN_DIR, 'exp_%d' % exp_id)
+    exe_dir = join(MAIN_DIR, 'alg_%d' % alg_id)
     executable = join(exe_dir, exe_file)
 
     # Note: commit head should also be saved to the task.

@@ -147,6 +147,7 @@ def get_next_task(request, exp_id):
             'experiment': 'http://' + domain + reverse('experiment-detail', args=[exp.pk]),
             'input_values': task.input_values,
             'task_id': task.pk,
+            'algorithm_id': task.experiment.algorithm.pk,
             'repository': task.experiment.algorithm.repository,
             'branch': task.experiment.algorithm.branch,
             'executable': task.experiment.algorithm.executable,
