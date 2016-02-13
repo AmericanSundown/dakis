@@ -41,7 +41,7 @@
                     <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
                   </button></a>
               {% endif %}
-              {% if exp.threads %}
+              {% if exp.status == 'R' %}
                   <span style="vertical-align: text-bottom;">
                     &nbsp;&nbsp;&nbsp;{% trans 'Threads running:' %} <b>{{ exp.threads }}</b></span>
                   <a href="{% url 'start-worker' exp.pk %}"><button class='btn btn-default btn-xs'>+1</button></a>

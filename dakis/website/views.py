@@ -39,12 +39,12 @@ def toggle_exp_status(request, exp_id):
             exp.status = 'R'
             if not request.user.profile.hostname or not request.user.profile.host_password:
                 messages.error(request, ugettext('Hostname or host password not set in UserProfile'))
-            else:
-                run_worker(exp, request.user)
-                if not exp.threads:
-                    exp.threads = 1
-                else:
-                    exp.threads += 1
+            # else:
+                # run_worker(exp, request.user)
+                # if not exp.threads:
+                #     exp.threads = 1
+                # else:
+                #     exp.threads += 1
                 # messages.success(request, ugettext('New thread was started successfully'))
         else:
             exp.status = 'P'
@@ -58,9 +58,9 @@ def toggle_exp_status(request, exp_id):
         if not exp.tasks.all():
             exp.create_tasks()
         exp.status = 'R'
-        exp.threads += 1
+        # exp.threads += 1
         exp.save()
-        run_worker(exp, request.user)
+        # run_worker(exp, request.user)
     return redirect(exp)
 
 
