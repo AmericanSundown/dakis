@@ -6,6 +6,8 @@ import collections
 import concurrency
 from difflib import ndiff
 from time import sleep
+from math import sqrt
+
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -166,8 +168,61 @@ def update_params(request, exp_id):
     return redirect(exp)
 
 
+def not_found(results, param, *args): # the percentage of not found
+    # results = [{'param name': 'value', ...}] input and output parameters of completed tasks
+
+    N = 1000 # number of all tasks
+    found_res = [0 for i in range(N)]
+    for i, task in enumerate(results):
+        j = int(task['seed'])
+        if 'is_found' in task.keys():
+            found_res[j] = 1-int(task['is_found'])
+    return 100*float(sum(found_res))/N # return one value
+
+def to_str(results, param, *args): # a string of all values
+    N = 1000 # number of all tasks
+    found_res = [0 for i in range(N)]
+    for i, task in enumerate(results):
+        j = int(task['seed'])
+        if 'is_found' in task.keys():
+            found_res[j] = str(task['is_found'])
+    return ''.join([str(e) for e in found_res]) # return one value
+
+
+def std(results, param, *args): # a string of all values
+    N = 1000 # number of all tasks
+    found_res = [0 for i in range(N//100)]
+    for i, task in enumerate(results):
+        j = int(task['seed'])//100
+        if 'is_found' in task.keys():
+            found_res[j] += 1-int(task['is_found'])
+    avg = sum(found_res)/10.
+    var = 1./9*sum([(f-avg)**2 for f in found_res])
+    return sqrt(var) # return one value
+
+def not_finished(results, param, *args): # a string of all values
+    N = 1000
+    found_res = [-1 for i in range(N)]
+    for i, task in enumerate(results):
+        j = int(task['seed'])
+        if 'is_found' in task.keys():
+            found_res[j] = int(task['is_found'])
+    not_finished_seeds = [i for i, fi in enumerate(found_res) if fi==-1]
+    return '{0} not finished: {1}'.format(1000-len(results), ', '.join([str(e) for e in not_finished_seeds]))
+
+
+
 def operate(param_name, tasks, operator):
-    vals = []
+    param_values = []
+    for task in tasks:
+        param_value = {}
+        for name, value in task.output_values:
+            param_value[name] = value
+        for name, value in task.input_values:
+            param_value[name] = value
+        param_values.append(param_value)
+
+    vals = []  # Old interface
     for task in tasks:
         for name, value in task.output_values:
             if name == param_name:
@@ -176,6 +231,7 @@ def operate(param_name, tasks, operator):
     if not vals:
         return None
     vals = sorted(vals)
+
     if operator == 'avg' or operator == 'average' or operator == 'mean':
         return sum(vals) / len(vals)
     elif operator == 'median':
@@ -186,7 +242,14 @@ def operate(param_name, tasks, operator):
         return max(vals)
     elif operator == 'min':
         return min(vals)
-
+    elif operator == 'not_found':
+        return not_found(param_values, param_name)
+    elif operator == 'str':
+        return to_str(param_values, param_name)
+    elif operator == 'std':
+        return std(param_values, param_name)
+    elif operator == 'not_finished':
+        return not_finished(param_values, param_name)
 
 
 def compare_exps(request):
