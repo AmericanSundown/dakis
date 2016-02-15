@@ -177,6 +177,8 @@ def not_found(results, param, *args): # the percentage of not found
         j = int(task['seed'])
         if 'is_found' in task.keys():
             found_res[j] = 1-int(task['is_found'])
+        else:
+            found_res[j] = 1
     return 100*float(sum(found_res))/N # return one value
 
 def to_str(results, param, *args): # a string of all values
@@ -186,6 +188,8 @@ def to_str(results, param, *args): # a string of all values
         j = int(task['seed'])
         if 'is_found' in task.keys():
             found_res[j] = str(task['is_found'])
+        else:
+            found_res[j] = 1
     return ''.join([str(e) for e in found_res]) # return one value
 
 
@@ -196,20 +200,18 @@ def std(results, param, *args): # a string of all values
         j = int(task['seed'])//100
         if 'is_found' in task.keys():
             found_res[j] += 1-int(task['is_found'])
+        else:
+            found_res[j] = 1
     avg = sum(found_res)/10.
     var = 1./9*sum([(f-avg)**2 for f in found_res])
     return sqrt(var) # return one value
 
 def not_finished(results, param, *args): # a string of all values
-    N = 1000
-    found_res = [-1 for i in range(N)]
+    res = []
     for i, task in enumerate(results):
-        j = int(task['seed'])
-        if 'is_found' in task.keys():
-            found_res[j] = int(task['is_found'])
-    not_finished_seeds = [i for i, fi in enumerate(found_res) if fi==-1]
-    return '{0} not finished: {1}'.format(1000-len(results), ', '.join([str(e) for e in not_finished_seeds]))
-
+        if not 'is_found' in task.keys():
+            res.append(task['seed'])
+    return '{0} not finished: {1}'.format(len(res), ', '.join([str(r) for r in res]))
 
 
 def operate(param_name, tasks, operator):

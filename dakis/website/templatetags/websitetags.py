@@ -111,4 +111,4 @@ def format(value):
 
 @register.filter
 def not_major_exp_children(exp):
-    return exp.children.filter(is_major=False)
+    return exp.children.order_by('-created').filter(is_major=False)
