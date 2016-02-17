@@ -155,9 +155,10 @@ def get_next_task(request, exp_id):
             'executable': task.experiment.algorithm.executable,
         }), content_type="application/json")
     else:
-        exp.threads -= 1
-        if exp.threads == 0:
-            exp.status = 'D'
+        if exp.threads > 0:
+            exp.threads -= 1
+        else:
+            exp.threads = 0
         exp.save()
     return HttpResponse(json.dumps({}), content_type="application/json")
 
@@ -224,6 +225,15 @@ def operate(param_name, tasks, operator):
             param_value[name] = value
         param_values.append(param_value)
 
+    if operator == 'not_found':
+        return not_found(param_values, param_name)
+    elif operator == 'str':
+        return to_str(param_values, param_name)
+    elif operator == 'std':
+        return std(param_values, param_name)
+    elif operator == 'not_finished':
+        return not_finished(param_values, param_name)
+
     vals = []  # Old interface
     for task in tasks:
         for name, value in task.output_values:
@@ -244,14 +254,6 @@ def operate(param_name, tasks, operator):
         return max(vals)
     elif operator == 'min':
         return min(vals)
-    elif operator == 'not_found':
-        return not_found(param_values, param_name)
-    elif operator == 'str':
-        return to_str(param_values, param_name)
-    elif operator == 'std':
-        return std(param_values, param_name)
-    elif operator == 'not_finished':
-        return not_finished(param_values, param_name)
 
 
 def compare_exps(request):
