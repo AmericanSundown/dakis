@@ -214,6 +214,20 @@ def not_finished(results, param, *args): # a string of all values
             res.append(task['seed'])
     return '{0} not finished: {1}'.format(len(res), ', '.join([str(r) for r in res]))
 
+def to_float_list(s):
+    return [float(si) for si in s[1:-1].split(',')]
+
+def avg_dist(results, param, *args): # the average distance to xmin
+    N = 1000 # number of all tasks
+    s = 0
+    for i, task in enumerate(results):
+        if 'x_0' in task.keys() and 'xmin' in task.keys():
+            x_0 = to_float_list(task['x_0'])
+            xmin = to_float_list(task['xmin'])
+            dist = (x_0[0]-xmin[0])**2 + (x_0[1]-xmin[1])**2
+            s += sqrt(dist)/N
+    return s
+
 
 def operate(param_name, tasks, operator):
     param_values = []
@@ -233,6 +247,8 @@ def operate(param_name, tasks, operator):
         return std(param_values, param_name)
     elif operator == 'not_finished':
         return not_finished(param_values, param_name)
+    elif operator == 'avg_dist':
+        return avg_dist(param_values, param_name)
 
     vals = []  # Old interface
     for task in tasks:
