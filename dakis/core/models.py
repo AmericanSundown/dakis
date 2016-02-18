@@ -112,8 +112,8 @@ class Experiment(models.Model):
     def __str__(self):
         if self.algorithm:
             title = self.algorithm.algorithm_title
-            if self.description:
-                title += ' ' + self.description
+            if self.problem:
+                title += ' ' + self.problem.problem_title
             return title[:150]
         elif self.description:
             if len(self.description) > 50:
