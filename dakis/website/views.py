@@ -228,6 +228,17 @@ def avg_dist(results, param, *args): # the average distance to xmin
             s += sqrt(dist)/N
     return s
 
+def max_min_dist(results, param, *args): # the maximum distance to xmin
+    N = 1000 # number of all tasks
+    d = 0
+    for i, task in enumerate(results):
+        if 'x_0' in task.keys() and 'xmin' in task.keys():
+            x_0 = to_float_list(task['x_0'])
+            xmin = to_float_list(task['xmin'])
+            dist = sqrt((x_0[0]-xmin[0])**2 + (x_0[1]-xmin[1])**2)
+            if d < dist:
+                d = dist
+    return d
 
 def operate(param_name, tasks, operator):
     param_values = []
@@ -249,6 +260,9 @@ def operate(param_name, tasks, operator):
         return not_finished(param_values, param_name)
     elif operator == 'avg_dist':
         return avg_dist(param_values, param_name)
+    elif operator == 'max_min_dist':
+        return max_min_dist(param_values, param_name)
+
 
     vals = []  # Old interface
     for task in tasks:
