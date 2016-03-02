@@ -18,6 +18,8 @@ class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
         user = self.context['request'].user
         if user.is_authenticated():
             data['author'] = user
+            data['problem'] = Problem.objects.create(author=data['author'], problem_title='<prob>')
+            data['algorithm'] = Algorithm.objects.create(author=data['author'], algorithm_title='<alg>')
         return super(ExperimentSerializer, self).create(data)
 
 
