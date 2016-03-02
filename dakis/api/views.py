@@ -20,6 +20,7 @@ class ExperimentSerializer(serializers.HyperlinkedModelSerializer):
             data['author'] = user
             data['problem'] = Problem.objects.create(author=data['author'], problem_title='<prob>')
             data['algorithm'] = Algorithm.objects.create(author=data['author'], algorithm_title='<alg>')
+        data['is_major'] = True
         return super(ExperimentSerializer, self).create(data)
 
 
