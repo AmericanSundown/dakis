@@ -96,8 +96,7 @@ class Experiment(models.Model):
 
     status = models.CharField(_('Status'), choices=STATUS_CHOICES, default='C', max_length=2)
 
-    threads = models.IntegerField(_('Threads'), default=0, null=True,
-        help_text=_('How many threads are currently running'))
+    threads = models.IntegerField(_('Threads'), default=0, help_text=_('How many threads are currently running'))
 
     invalid = models.BooleanField(_('Not valid'), default=False,
         help_text=_('Is this experiment not valid? Its not valid if critical mistake was found.'))
