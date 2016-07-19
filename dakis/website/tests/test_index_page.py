@@ -1,17 +1,14 @@
-import django_webtest
+from django_webtest import WebTest
 
-import django.contrib.auth.models as auth_models
+from django.contrib.auth.models import User, AnonymousUser
 
 
-class IndexPageTests(django_webtest.WebTest):
-    def setUp(self):
-        super().setUp()
-        auth_models.User.objects.create_user('u1')
+class IndexPageTests(WebTest):
 
-    def test_index_page_with_anonymous_user(self):
-        resp = self.app.get('/')
+    def test_index_page(self):
+        resp = self.app.get('/', user=AnonymousUser())
         self.assertEqual(resp.status_int, 200)
 
-    def test_index_page_with_logged_in_user(self):
-        resp = self.app.get('/', user='u1')
+        user = User.objects.create(username='u1')
+        resp = self.app.get('/', user=user)
         self.assertEqual(resp.status_int, 200)
