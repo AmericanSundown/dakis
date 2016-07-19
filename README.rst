@@ -17,11 +17,12 @@ In Ubuntu terminal execute::
 
 Project Scope
 =============
-+ Post one experiments task result through REST 
-    - Universal python poster script should exist
-        - Data should be passed as command line argument and script posts it to API
-        - Next tasks starter could also exist. After posting data script starts next task execution.
-    - Results can be posted from supercomputer nodes
-+ Show experiments list
-+ Show experiment tasks results summary
-- Compare two experiment summaryies
+- Login
+- Read instructions how to implement and test your optimization algorithm
+- Add new algorithm by posting repository URL of algorithm, which implements the interface
+- Choose optimization problem and result visualisation techniques for algorithm and run the experiment
+- See single experiment results (algorithm + problem)
+- See all experiment results for an algorithm (summary of an algorithm)
+- Add optimization problem and its visualization technique (operators and ploting scripts should be uploaded)
+- Compare one or more algorithm results for an arbitrary problem
+- See a list of algorithms and their modifications
