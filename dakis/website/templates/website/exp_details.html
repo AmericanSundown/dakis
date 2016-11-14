@@ -102,6 +102,9 @@
         {% if exp.algorithm %}
         <p><small><b><span title="{{ exp.algorithm.pk }}">{% trans 'Algorithm' %}</span></b></small>: <a href="{{ exp.algorithm.repository }}/tree/{{ exp.algorithm.branch }}">{{ exp.algorithm }}</a></p>
         {% endif %}
+        {% if exp.parent %}
+        <p><small><b>{% trans 'Parent' %}</b></small>: <a href="{% url 'exp-summary' exp.parent.id %}">{{ exp.parent }}</a></p>
+        {% endif %}
         <div class='text-center' style='font-size: 10px;'><b>About algorithm</b></div>
         {% if exp.mistakes %}
           <p><small style="color: darkred;"><b>{% trans 'Mistake' %}</b></small>: {{ exp.mistakes }}</p>
