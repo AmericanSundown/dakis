@@ -96,6 +96,10 @@ def run_worker(exp, user):
     logger.info('Running: ' + cmd)
 
     subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+    ## Should get one output line (thread is not ignored), then do not wait for it to terminate
+    # p = subprocess.Popen(cmd, shell=True, stdin=None, stdout=PIPE, stderr=None, close_fds=True)
+    # p.stdout.read()   # waits till process terminates: p.communicate()[0]
+    # p.stdout.close()
     exp.save()   # Note: Why exp is saved here?
     return
 
@@ -280,6 +284,8 @@ def operate(param_name, tasks, operator):
         if len(vals) % 2 == 1:
             return vals[len(vals) // 2]
         return (vals[len(vals) // 2 - 1] + vals[len(vals) // 2]) / 2
+    elif operator == 'median50':
+        return vals[len(vals) // 2 - 1]
     elif operator == 'max':
         return max(vals)
     elif operator == 'min':
