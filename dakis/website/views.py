@@ -254,9 +254,9 @@ def operate(param_name, tasks, operator):
             param_value[name] = value
         param_values.append(param_value)
 
-    if operator == 'not_found':
+    if operator == 'not_found':  # Grazinos
         return not_found(param_values, param_name)
-    elif operator == 'str':
+    elif operator == 'str':   # Grazinos
         return to_str(param_values, param_name)
     elif operator == 'std':
         return std(param_values, param_name)
@@ -266,7 +266,6 @@ def operate(param_name, tasks, operator):
         return avg_dist(param_values, param_name)
     elif operator == 'max_min_dist':
         return max_min_dist(param_values, param_name)
-
 
     vals = []  # Old interface
     for task in tasks:
@@ -290,6 +289,8 @@ def operate(param_name, tasks, operator):
         return max(vals)
     elif operator == 'min':
         return min(vals)
+    elif operator == 'none':
+        return str(vals[0])
 
 
 def compare_exps(request):
