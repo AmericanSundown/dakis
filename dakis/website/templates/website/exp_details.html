@@ -64,7 +64,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-8">
         <div class='text-center'><h3>{% trans 'Results' %}</h3></div>
         {% for table in tables %}
           <table class="table table-striped">
@@ -91,7 +91,7 @@
       {% endfor %}
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-4">
         {% if exp.description %}
           <p><small><b>{% trans 'Experiment' %}</b></small>: {{ exp.description }}</p>
         {% endif %}
