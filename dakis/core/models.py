@@ -208,8 +208,12 @@ class Experiment(models.Model):
 
 
     def get_tasks_grouped_by_input_param_value(self, param_name=None):
+        groups_of_tasks = []
         if param_name is None:
-            return [('Total:', self.tasks.all())]
+            for task in self.tasks.order_by('pk'):
+                groups_of_tasks.append((task.pk, self.tasks.filter(pk=task.pk)))
+            return groups_of_tasks
+            # return [('Total:', self.tasks.all())]
 
         # Find unique values
         unique_values = []
@@ -222,7 +226,6 @@ class Experiment(models.Model):
                 unique_values.append(value)
 
         # Find task groups
-        groups_of_tasks = []
         for value in unique_values:
             if type(value) == str:
                 tasks = self.tasks.filter(input_values__contains='["%s", "%s"]' % (param_name, value))
