@@ -267,6 +267,15 @@ def operate(param_name, tasks, operator):
     elif operator == 'max_min_dist':
         return max_min_dist(param_values, param_name)
 
+    elif operator == 'none':
+        for name, value in task.output_values:
+            if name == param_name:
+                return str(value)
+        for name, value in task.input_values:
+            if name == param_name:
+                return str(value)
+        return None
+
     vals = []  # Old interface
     for task in tasks:
         for name, value in task.output_values:
@@ -289,8 +298,6 @@ def operate(param_name, tasks, operator):
         return max(vals)
     elif operator == 'min':
         return min(vals)
-    elif operator == 'none':
-        return str(vals[0])
 
 
 def compare_exps(request):
