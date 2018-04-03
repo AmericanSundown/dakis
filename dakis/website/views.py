@@ -296,6 +296,8 @@ def operate(param_name, tasks, operator):
         return vals[len(vals) // 2 - 1]
     elif operator == 'max':
         return max(vals)
+    elif operator == 'sum':
+        return sum(vals)
     elif operator == 'min':
         return min(vals)
 
